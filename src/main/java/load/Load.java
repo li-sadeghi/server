@@ -46,4 +46,11 @@ public class Load {
         if (password.equals(correctPass))return true;
         else return false;
     }
+    public static <T> T delete(Class<T> tClass, Serializable id) {
+        Session session = sessionFactory.openSession();
+        T t = session.get(tClass, id);
+        session.delete(t);
+        session.close();
+        return null;
+    }
 }

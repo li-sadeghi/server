@@ -15,7 +15,7 @@ public class Master extends User{
     @Enumerated(EnumType.STRING)
     private MasterRole masterRole;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private Department department;
+    private Department department = new Department();
     @Column
     @Enumerated(EnumType.STRING)
     private MasterGrade grade;

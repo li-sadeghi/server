@@ -19,9 +19,9 @@ public class Student extends User{
     @Column
     private int units;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private Department department;
+    private Department department = new Department();
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private Master helperMaster;
+    private Master helperMaster = new Master();
     @Column
     private String enteringYear;
     @Column

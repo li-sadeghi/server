@@ -132,7 +132,46 @@ public class Server {
             case SINGLE_STUDENT -> {
                 sendSingleStudentData(clientId, request);
             }
+            case CHANGE_EMAIL -> {
+                changeEmail(clientId, request);
+            }
+            case CHANGE_PHONE -> {
+                changePhoneNumber(clientId, request);
+            }
+            case DELETE_COURSE -> {
+                deleteCourse(clientId, request);
+            }
         }
+    }
+
+    private void deleteCourse(int clientId, Request request) {
+        Response response = new Response();
+        response.setErrorMessage("Course was deleted successfully");
+        String courseId = (String) request.getData("courseId");
+        Load.delete(Course.class, courseId);
+        findClientAndSendResponse(clientId, response);
+    }
+
+    private void changePhoneNumber(int clientId, Request request) {
+        Response response = new Response();
+        response.setErrorMessage("your phone number changed successfully!");
+        String username = (String) request.getData("username");
+        User user = Load.fetch(User.class, username);
+        String newPhone = (String) request.getData("newPhone");
+        user.setPhoneNumber(newPhone);
+        Update.update(user);
+        findClientAndSendResponse(clientId, response);
+    }
+
+    private void changeEmail(int clientId, Request request) {
+        Response response = new Response();
+        response.setErrorMessage("your email changed successfully!");
+        String username = (String) request.getData("username");
+        User user = Load.fetch(User.class, username);
+        String newEmail = (String) request.getData("newEmail");
+        user.setEmailAddress(newEmail);
+        Update.update(user);
+        findClientAndSendResponse(clientId, response);
     }
 
     private void sendSingleStudentData(int clientId, Request request) {
