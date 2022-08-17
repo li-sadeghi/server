@@ -89,7 +89,7 @@ public class Master extends User{
         sharedMaster.setGrade(grade.toShared());
 //        sharedMaster.setDepartment(department.toShared());
         ArrayList<sharedmodels.department.Course> courses1 =new ArrayList<>();
-//        for (Course course : courses) {
+//        for (Course course : courses)
 //            courses1.add(course.toShared());
 //        }
         sharedMaster.setCourses(courses1);

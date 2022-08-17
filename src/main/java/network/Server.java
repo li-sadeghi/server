@@ -141,7 +141,18 @@ public class Server {
             case DELETE_COURSE -> {
                 deleteCourse(clientId, request);
             }
+            case DELETE_MASTER -> {
+                deleteMAster(clientId, request);
+            }
         }
+    }
+
+    private void deleteMAster(int clientId, Request request) {
+        Response response = new Response();
+        response.setErrorMessage("Master was deleted successfully");
+        String masterIdSelected = (String) request.getData("usernameSelected");
+        Load.delete(Master.class, masterIdSelected);
+        findClientAndSendResponse(clientId, response);
     }
 
     private void deleteCourse(int clientId, Request request) {
