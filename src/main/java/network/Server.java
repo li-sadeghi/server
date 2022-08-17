@@ -10,9 +10,12 @@ import save.Save;
 import save.Update;
 import servermodels.chatroom.Message;
 import servermodels.chatroom.MessageType;
+import servermodels.department.Course;
 import servermodels.security.Captcha;
+import servermodels.users.Master;
 import servermodels.users.Student;
 import servermodels.users.User;
+import sharedmodels.users.SharedMaster;
 import sharedmodels.users.SharedStudent;
 import sharedmodels.users.SharedUser;
 import time.DateAndTime;
@@ -22,6 +25,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Server {
     private final ArrayList<ClientHandler> clients;
@@ -125,20 +129,48 @@ public class Server {
             case MASTER_DATA -> {
                 sendAllMastterData(clientId, request);
             }
+            case SINGLE_STUDENT -> {
+                sendSingleStudentData(clientId, request);
+            }
         }
+    }
+
+    private void sendSingleStudentData(int clientId, Request request) {
+        String username = (String) request.getData("username");
+        SharedStudent student = (SharedStudent) (Load.fetch(Student.class, username).toShared());
+        Response response = new Response();
+        response.addData("user", student);
+        findClientAndSendResponse(clientId, response);
     }
 
     private void sendAllMastterData(int clientId, Request request) {
     }
 
     private void sendAllStudentData(int clientId, Request request) {
+        Response response = new Response();
+        String username = (String) request.getData("username");
+        Student student = Load.fetch(Student.class, username);
+        response.addData("user", student.toShared());
+        List<Course> courses = Load.fetchAll(Course.class);
+        ArrayList<sharedmodels.department.Course> courses1 = new ArrayList<>();
+        for (Course course : courses) {
+            courses1.add(course.toShared());
+        }
+        response.addData("courses", courses1);
+        List<Master> masters = Load.fetchAll(Master.class);
+        ArrayList<SharedMaster> masters1 = new ArrayList<>();
+        for (Master master : masters) {
+            masters1.add((SharedMaster) master.toShared());
+        }
+        response.addData("masters", masters1);
+        findClientAndSendResponse(clientId, response);
     }
 
     private void sendAllMohseniData(int clientId, Request request) {
         Response response = new Response();
         String username = (String) request.getData("username");
         User mohseni = Load.fetch(User.class, username);
-        response.addData("user", mohseni);
+        response.addData("user", mohseni.toShared());
         ArrayList<Student> students = (ArrayList<Student>) Load.fetchAll(Student.class);
         ArrayList<SharedStudent> sharedStudents = new ArrayList<>();
         for (Student student : students) {
@@ -173,11 +205,13 @@ public class Server {
         User user = Load.fetch(User.class, "1");
         SharedUser sharedUser = user.toShared();
         response.addData("user", sharedUser);
-//        ArrayList<Message> messages = (ArrayList<Message>) Load.fetchWithCondition(Message.class, "receiver", user);
+        List<Message> messages = Load.fetchAll(Message.class);
         ArrayList<sharedmodels.chatroom.Message> messages1 = new ArrayList<>();
-//        for (Message message : messages) {
-//            messages1.add(message.toShared());
-//        }
+        for (Message message : messages) {
+            if (message.getReceiver().getUsername().equals("1")){
+                messages1.add(message.toShared());
+            }
+        }
         response.addData("messages", messages1);
         findClientAndSendResponse(clientId, response);
     }
@@ -215,7 +249,6 @@ public class Server {
     private void sendLoginResponse(int clientId, Request request) {
         String username = (String) request.getData("username");
         String password = (String) request.getData("password");
-        System.out.println(username);
         Response response = new Response();
         response.setHashMap();
         if (!Load.isExistUser(username)){
@@ -234,7 +267,6 @@ public class Server {
             }else {
                 response.setStatus(ResponseStatus.OK);
                 SharedUser sharedUser = user.toShared();
-                System.out.println(sharedUser.getFullName());
                 response.addData("user", sharedUser);
             }
         }

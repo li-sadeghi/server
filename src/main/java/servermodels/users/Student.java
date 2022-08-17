@@ -18,9 +18,9 @@ public class Student extends User{
     private double average;
     @Column
     private int units;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Department department;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Master helperMaster;
     @Column
     private String enteringYear;
@@ -35,12 +35,12 @@ public class Student extends User{
     private Licence registrationLicence;
     @Column
     private String registrationTime;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "Student_Course")
     private List<Course> courses = new ArrayList<>();
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<PassedCourse> passedCourses = new ArrayList<>();
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<TemporaryCourse> temporaryCourses = new ArrayList<>();
 
     public Student(){
@@ -177,29 +177,58 @@ public class Student extends User{
         sharedStudent.setLastLogin(getLastLogin());
         sharedStudent.setFullName(getFullName());
         sharedStudent.setAverage(average);
-        sharedStudent.setDepartment(department.toShared());
-        sharedStudent.setUnits(units);
-        ArrayList<sharedmodels.department.TemporaryCourse> temporaryCourses1 = new ArrayList<>();
-        for (TemporaryCourse temporaryCourse : temporaryCourses) {
-            temporaryCourses1.add(temporaryCourse.toShared());
-        }
-        sharedStudent.setTemporaryCourses(temporaryCourses1);
+//        if (department != null){
+//            sharedStudent.setDepartment(department.toShared());
+//        }
+//        sharedStudent.setUnits(units);
+//        if (temporaryCourses != null ){
+//            ArrayList<sharedmodels.department.TemporaryCourse> temporaryCourses1 = new ArrayList<>();
+//            for (int i = 0; i < temporaryCourses.size(); i++) {
+//                TemporaryCourse temporaryCourse = temporaryCourses.get(i);
+//                temporaryCourses1.add(temporaryCourse.toShared());
+//            }
+//            sharedStudent.setTemporaryCourses(temporaryCourses1);
+//        }
         sharedStudent.setStatus(status.toShared());
         sharedStudent.setRegistrationTime(registrationTime);
         sharedStudent.setRegistrationLicence(registrationLicence.toShared());
-        ArrayList<sharedmodels.department.PassedCourse> passedCourses1 = new ArrayList<>();
-        for (PassedCourse passedCourse : passedCourses) {
-            passedCourses1.add(passedCourse.toShared());
-        }
-        sharedStudent.setPassedCourses(passedCourses1);
-        sharedStudent.setHelperMaster((SharedMaster) helperMaster.toShared());
+//        if (passedCourses != null){
+//            ArrayList<sharedmodels.department.PassedCourse> passedCourses1 = new ArrayList<>();
+//            for (PassedCourse passedCourse : passedCourses) {
+//                passedCourses1.add(passedCourse.toShared());
+//            }
+//            sharedStudent.setPassedCourses(passedCourses1);
+//        }
+//        if (helperMaster != null){
+//            sharedStudent.setHelperMaster((SharedMaster) helperMaster.toShared());
+//        }
         sharedStudent.setGrade(grade.toShared());
         sharedStudent.setEnteringYear(enteringYear);
-        ArrayList<sharedmodels.department.Course> courses1 =new ArrayList<>();
-        for (Course course : courses) {
-            courses1.add(course.toShared());
-        }
-        sharedStudent.setCourses(courses1);
+//        if (courses != null){
+//            ArrayList<sharedmodels.department.Course> courses1 =new ArrayList<>();
+//            for (Course course : courses) {
+//                courses1.add(course.toShared());
+//            }
+//            sharedStudent.setCourses(courses1);
+//        }
         return sharedStudent;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "average=" + average +
+                ", units=" + units +
+                ", department=" + department +
+                ", helperMaster=" + helperMaster +
+                ", enteringYear='" + enteringYear + '\'' +
+                ", grade=" + grade +
+                ", status=" + status +
+                ", registrationLicence=" + registrationLicence +
+                ", registrationTime='" + registrationTime + '\'' +
+                ", courses=" + courses +
+                ", passedCourses=" + passedCourses +
+                ", temporaryCourses=" + temporaryCourses +
+                '}';
     }
 }

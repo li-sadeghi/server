@@ -9,9 +9,9 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private User sender;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private User receiver;
     @Column
     private String messageText;
@@ -66,8 +66,8 @@ public class Message {
         message.setId(id);
         message.setMessageText(messageText);
         message.setMessageType(messageType.toShared());
-        message.setSender(sender.toShared());
-        message.setReceiver(receiver.toShared());
+        message.setSenderId(sender.getUsername());
+        message.setReceiverId(receiver.getUsername());
         return message;
     }
 

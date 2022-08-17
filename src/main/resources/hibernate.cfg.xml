@@ -23,9 +23,6 @@
         <mapping class="servermodels.cw.Solution"/>
         <mapping class="servermodels.department.PassedCourse"/>
         <mapping class="servermodels.department.TemporaryCourse"/>
-<!--        <mapping class="GameCards.Minion"/>-->
-<!--        <mapping class="GameCards.Spell"/>-->
-<!--        <mapping class="GameCards.Weapon"/>-->
 
 
     </session-factory>

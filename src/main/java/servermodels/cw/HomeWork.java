@@ -11,7 +11,7 @@ public class HomeWork {
     private int id;
     @Column
     private String homeworkFileString;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<Solution> solutions;
 
     public HomeWork() {

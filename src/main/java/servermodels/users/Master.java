@@ -14,14 +14,14 @@ public class Master extends User{
     @Column
     @Enumerated(EnumType.STRING)
     private MasterRole masterRole;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Department department;
     @Column
     @Enumerated(EnumType.STRING)
     private MasterGrade grade;
     @Column
     private String roomNumber;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "Master_Course")
     private List<Course> courses = new ArrayList<>();
 
@@ -87,11 +87,11 @@ public class Master extends User{
         sharedMaster.setFullName(getFullName());
         sharedMaster.setRoomNumber(roomNumber);
         sharedMaster.setGrade(grade.toShared());
-        sharedMaster.setDepartment(department.toShared());
+//        sharedMaster.setDepartment(department.toShared());
         ArrayList<sharedmodels.department.Course> courses1 =new ArrayList<>();
-        for (Course course : courses) {
-            courses1.add(course.toShared());
-        }
+//        for (Course course : courses) {
+//            courses1.add(course.toShared());
+//        }
         sharedMaster.setCourses(courses1);
         sharedMaster.setMasterRole(masterRole.toShared());
         return sharedMaster;
