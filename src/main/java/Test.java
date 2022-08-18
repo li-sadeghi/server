@@ -4,6 +4,7 @@ import save.Update;
 import servermodels.chatroom.Message;
 import servermodels.chatroom.MessageType;
 import servermodels.users.Master;
+import servermodels.users.MasterRole;
 import servermodels.users.Student;
 import servermodels.users.User;
 
@@ -27,5 +28,8 @@ public class Test {
 //        master.setPhoneNumber("02158646");
 //        Update.update(master);
 
+        Master master = Load.fetch(Master.class, "1234567");
+        master.setMasterRole(MasterRole.EDUCATIONAL_ASSISTANT);
+        Update.update(master);
     }
 }

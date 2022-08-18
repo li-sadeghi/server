@@ -432,6 +432,24 @@ public class Server {
     }
 
     private void sendAllMasterData(int clientId, Request request) {
+        Response response = new Response();
+        String username = (String) request.getData("username");
+        Master master = Load.fetch(Master.class, username);
+        response.addData("user", master.toShared());
+        ArrayList<Course> courses = (ArrayList<Course>) Load.fetchAll(Course.class);
+        ArrayList<sharedmodels.department.Course> courses1 = new ArrayList<>();
+        for (Course course : courses) {
+            sharedmodels.department.Course course1 = course.toShared();
+            courses1.add(course1);
+        }
+        response.addData("courses", courses1);
+        ArrayList<Master> masters = (ArrayList<Master>) Load.fetchAll(Master.class);
+        ArrayList<SharedMaster> masters1 = new ArrayList<>();
+        for (Master master1 : masters) {
+            masters1.add((SharedMaster) master1.toShared());
+        }
+        response.addData("masters", masters1);
+        findClientAndSendResponse(clientId, response);
     }
 
     private void sendAllStudentData(int clientId, Request request) {
