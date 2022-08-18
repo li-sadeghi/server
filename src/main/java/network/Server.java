@@ -11,13 +11,12 @@ import save.Update;
 import servermodels.chatroom.Message;
 import servermodels.chatroom.MessageType;
 import servermodels.department.Course;
+import servermodels.department.Department;
 import servermodels.security.Captcha;
 import servermodels.users.Master;
 import servermodels.users.Student;
 import servermodels.users.User;
-import sharedmodels.users.SharedMaster;
-import sharedmodels.users.SharedStudent;
-import sharedmodels.users.SharedUser;
+import sharedmodels.users.*;
 import time.DateAndTime;
 import util.extra.EncodeDecodeFile;
 
@@ -127,7 +126,7 @@ public class Server {
                 sendAllStudentData(clientId, request);
             }
             case MASTER_DATA -> {
-                sendAllMastterData(clientId, request);
+                sendAllMasterData(clientId, request);
             }
             case SINGLE_STUDENT -> {
                 sendSingleStudentData(clientId, request);
@@ -144,7 +143,246 @@ public class Server {
             case DELETE_MASTER -> {
                 deleteMAster(clientId, request);
             }
+            case ADD_COURSE -> {
+                addNewCourse(clientId, request);
+            }
+            case EDIT_COURSE -> {
+                editCourse(clientId, request);
+            }
+            case ADD_MASTER -> {
+                addMaster(clientId, request);
+            }
+            case ADD_STUDENT -> {
+                addStudent(clientId, request);
+            }
+            case EDIT_MASTER -> {
+                editMaster(clientId, request);
+            }
+
         }
+    }
+
+    private void editMaster(int clientId, Request request) {
+        Response response = new Response();
+        SharedMaster sharedMaster = (SharedMaster) request.getData("newMaster");
+        String username = sharedMaster.getUsername();
+        String password = (String) request.getData("password");
+        Master master = Load.fetch(Master.class, username);
+        master.setPassword(password);
+        ArrayList<String> coursesIDs = (ArrayList<String>) request.getData("coursesIDs");
+        ArrayList<Course> courses = new ArrayList<>();
+        for (String courseID : coursesIDs) {
+            Course course = Load.fetch(Course.class, courseID);
+            courses.add(course);
+            course.setMaster(master);
+        }
+        master.setCourses(courses);
+        master.setFullName(sharedMaster.getFullName());
+        master.setNationalCode(sharedMaster.getNationalCode());
+        master.setPhoneNumber(sharedMaster.getPhoneNumber());
+        master.setEmailAddress(sharedMaster.getEmailAddress());
+        master.setRoomNumber(sharedMaster.getRoomNumber());
+        if (sharedMaster.getMasterRole() == MasterRole.EDUCATIONAL_ASSISTANT){
+            master.setMasterRole(servermodels.users.MasterRole.EDUCATIONAL_ASSISTANT);
+        }else if (sharedMaster.getMasterRole() == MasterRole.CHAIRMAN){
+            master.setMasterRole(servermodels.users.MasterRole.CHAIRMAN);
+        }else {
+            master.setMasterRole(servermodels.users.MasterRole.MASTER);
+        }
+        if (sharedMaster.getGrade() == MasterGrade.ASSISTANT_PROFESSOR){
+            master.setGrade(servermodels.users.MasterGrade.ASSISTANT_PROFESSOR);
+        }else if (sharedMaster.getGrade() == MasterGrade.ASSOCIATE_PROFESSOR){
+            master.setGrade(servermodels.users.MasterGrade.ASSOCIATE_PROFESSOR);
+        }else {
+            master.setGrade(servermodels.users.MasterGrade.FULL_PROFESSOR);
+        }
+        Update.update(master);
+        for (Course course : courses) {
+            Update.update(course);
+        }
+        response.setErrorMessage("master edited successfully!");
+        findClientAndSendResponse(clientId, response);
+    }
+
+    private void addStudent(int clientId, Request request) {
+        Response response = new Response();
+        String editorId = (String) request.getData("editorId");
+        Master editor = Load.fetch(Master.class, editorId);
+        SharedStudent sharedStudent = (SharedStudent) request.getData("newStudent");
+        String password = (String) request.getData("password");
+        String helperMasterId = (String) request.getData("helperMasterId");
+        Master helperMaster = Load.fetch(Master.class, helperMasterId);
+        Student student = new Student(sharedStudent.getUsername(), password);
+        student.setHelperMaster(helperMaster);
+        student.setDepartment(editor.getDepartment());
+        editor.getDepartment().getStudents().add(student);
+        student.setFullName(sharedStudent.getFullName());
+        student.setNationalCode(sharedStudent.getNationalCode());
+        student.setPhoneNumber(sharedStudent.getPhoneNumber());
+        student.setEmailAddress(sharedStudent.getEmailAddress());
+        student.setEnteringYear(sharedStudent.getEnteringYear());
+        if (sharedStudent.getGrade() == StudentGrade.GRADUATED){
+            student.setGrade(servermodels.users.StudentGrade.GRADUATED);
+        }else if (sharedStudent.getGrade() == StudentGrade.UNDERGRADUATE){
+            student.setGrade(servermodels.users.StudentGrade.UNDERGRADUATE);
+        }else {
+            student.setGrade(servermodels.users.StudentGrade.PHD);
+        }
+        student.setAverage(0);
+        student.setUnits(0);
+        student.setCourses(new ArrayList<>());
+        student.setPassedCourses(new ArrayList<>());
+        student.setTemporaryCourses(new ArrayList<>());
+        Save.save(student);
+        Update.update(editor.getDepartment());
+        response.setErrorMessage("student added successfully");
+        findClientAndSendResponse(clientId, response);
+    }
+
+    private void addMaster(int clientId, Request request) {
+        Response response = new Response();
+        String editorId = (String) request.getData("editorId");
+        Master editor = Load.fetch(Master.class, editorId);
+        Department department = editor.getDepartment();
+        SharedMaster sharedMaster = (SharedMaster) request.getData("newMaster");
+        String username = sharedMaster.getUsername();
+        String password = (String) request.getData("password");
+        Master master = new Master();
+        master.setUsername(username);
+        master.setPassword(password);
+        master.setDepartment(department);
+        department.getMasters().add(master);
+        ArrayList<String> coursesIDs = (ArrayList<String>) request.getData("coursesIDs");
+        ArrayList<Course> courses = new ArrayList<>();
+        for (String courseID : coursesIDs) {
+            Course course = Load.fetch(Course.class, courseID);
+            courses.add(course);
+            course.setMaster(master);
+        }
+        master.setCourses(courses);
+        master.setFullName(sharedMaster.getFullName());
+        master.setNationalCode(sharedMaster.getNationalCode());
+        master.setPhoneNumber(sharedMaster.getPhoneNumber());
+        master.setEmailAddress(sharedMaster.getEmailAddress());
+        master.setRoomNumber(sharedMaster.getRoomNumber());
+        if (sharedMaster.getMasterRole() == MasterRole.EDUCATIONAL_ASSISTANT){
+            master.setMasterRole(servermodels.users.MasterRole.EDUCATIONAL_ASSISTANT);
+        }else if (sharedMaster.getMasterRole() == MasterRole.CHAIRMAN){
+            master.setMasterRole(servermodels.users.MasterRole.CHAIRMAN);
+        }else {
+            master.setMasterRole(servermodels.users.MasterRole.MASTER);
+        }
+        if (sharedMaster.getGrade() == MasterGrade.ASSISTANT_PROFESSOR){
+            master.setGrade(servermodels.users.MasterGrade.ASSISTANT_PROFESSOR);
+        }else if (sharedMaster.getGrade() == MasterGrade.ASSOCIATE_PROFESSOR){
+            master.setGrade(servermodels.users.MasterGrade.ASSOCIATE_PROFESSOR);
+        }else {
+            master.setGrade(servermodels.users.MasterGrade.FULL_PROFESSOR);
+        }
+        Update.update(department);
+        Save.save(master);
+        for (Course course : courses) {
+            Update.update(course);
+        }
+        response.setErrorMessage("master added successfully!");
+        findClientAndSendResponse(clientId, response);
+    }
+
+    private void editCourse(int clientId, Request request) {
+        Response response = new Response();
+        sharedmodels.department.Course editedCourse = (sharedmodels.department.Course) request.getData("course");
+        String departmentId = (String) request.getData("departmentId");
+        String masterId = (String) request.getData("masterId");
+        String prerequisiteId = (String) request.getData("prerequisiteId");
+        ArrayList<String> studentIDs = (ArrayList<String>) request.getData("studentIDs");
+        ArrayList<String> tAsIds = (ArrayList<String>) request.getData("tAsIds");
+        Course course = Load.fetch(Course.class, editedCourse.getId());
+        course.setUnit(editedCourse.getUnit());
+        course.setWeeklyTime(editedCourse.getWeeklyTime());
+        course.setExamTime(editedCourse.getExamTime());
+        course.setCapacity(editedCourse.getCapacity());
+        Department department = Load.fetch(Department.class, departmentId);
+        Master master = Load.fetch(Master.class, masterId);
+        Course prerequisiteCourse = Load.fetch(Course.class, prerequisiteId);
+        course.setDepartment(department);
+        course.setPrerequisite(prerequisiteCourse);
+        course.setMaster(master);
+        department.getCourses().add(course);
+        master.getCourses().add(course);
+        ArrayList<Student> studentsHaveCourse = new ArrayList<>();
+        ArrayList<Student> TAs = new ArrayList<>();
+        for (String studentID : studentIDs) {
+            Student student = Load.fetch(Student.class, studentID);
+            student.getCourses().add(course);
+            studentsHaveCourse.add(student);
+        }
+        for (String studentID : tAsIds) {
+            Student student = Load.fetch(Student.class, studentID);
+            student.getCourses().add(course);
+            TAs.add(student);
+        }
+        course.setTeacherAssistants(TAs);
+        course.setStudentsHaveCourse(studentsHaveCourse);
+        Update.update(course);
+        Update.update(department);
+        Update.update(prerequisiteCourse);
+        for (Student student : studentsHaveCourse) {
+            Update.update(student);
+        }
+        for (Student ta : TAs) {
+            Update.update(ta);
+        }
+        response.setErrorMessage("your course successfully edited!");
+        findClientAndSendResponse(clientId, response);
+    }
+
+    private void addNewCourse(int clientId, Request request) {
+        Response response = new Response();
+        sharedmodels.department.Course editedCourse = (sharedmodels.department.Course) request.getData("course");
+        String departmentId = (String) request.getData("departmentId");
+        String masterId = (String) request.getData("masterId");
+        String prerequisiteId = (String) request.getData("prerequisiteId");
+        ArrayList<String> studentIDs = (ArrayList<String>) request.getData("studentIDs");
+        ArrayList<String> tAsIds = (ArrayList<String>) request.getData("tAsIds");
+        Course course = new Course();
+        course.setId(editedCourse.getId());
+        course.setUnit(editedCourse.getUnit());
+        course.setWeeklyTime(editedCourse.getWeeklyTime());
+        course.setExamTime(editedCourse.getExamTime());
+        course.setCapacity(editedCourse.getCapacity());
+        Department department = Load.fetch(Department.class, departmentId);
+        Master master = Load.fetch(Master.class, masterId);
+        Course prerequisiteCourse = Load.fetch(Course.class, prerequisiteId);
+        course.setDepartment(department);
+        course.setPrerequisite(prerequisiteCourse);
+        course.setMaster(master);
+        department.getCourses().add(course);
+        master.getCourses().add(course);
+        ArrayList<Student> studentsHaveCourse = new ArrayList<>();
+        ArrayList<Student> TAs = new ArrayList<>();
+        for (String studentID : studentIDs) {
+            Student student = Load.fetch(Student.class, studentID);
+            student.getCourses().add(course);
+            studentsHaveCourse.add(student);
+        }
+        for (String studentID : tAsIds) {
+            Student student = Load.fetch(Student.class, studentID);
+            student.getCourses().add(course);
+            TAs.add(student);
+        }
+        course.setTeacherAssistants(TAs);
+        course.setStudentsHaveCourse(studentsHaveCourse);
+        Save.save(course);
+        Update.update(department);
+        Update.update(prerequisiteCourse);
+        for (Student student : studentsHaveCourse) {
+            Update.update(student);
+        }
+        for (Student ta : TAs) {
+            Update.update(ta);
+        }
+        response.setErrorMessage("your course successfully added!");
+        findClientAndSendResponse(clientId, response);
     }
 
     private void deleteMAster(int clientId, Request request) {
@@ -193,7 +431,7 @@ public class Server {
         findClientAndSendResponse(clientId, response);
     }
 
-    private void sendAllMastterData(int clientId, Request request) {
+    private void sendAllMasterData(int clientId, Request request) {
     }
 
     private void sendAllStudentData(int clientId, Request request) {

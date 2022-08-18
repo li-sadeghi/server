@@ -23,8 +23,9 @@ public class Test {
 //        User student = Load.fetch(User.class, "1");
 //        student.setEmailAddress("adfghjghjk");
 //        Update.update(student);
-        User master = Load.fetch(User.class, "1234567");
-        master.setPhoneNumber("02158646");
-        Update.update(master);
+//        User master = Load.fetch(User.class, "1234567");
+//        master.setPhoneNumber("02158646");
+//        Update.update(master);
+
     }
 }
