@@ -12,6 +12,8 @@ import servermodels.chatroom.Message;
 import servermodels.chatroom.MessageType;
 import servermodels.department.Course;
 import servermodels.department.Department;
+import servermodels.department.PassedCourse;
+import servermodels.department.TemporaryCourse;
 import servermodels.security.Captcha;
 import servermodels.users.Master;
 import servermodels.users.Student;
@@ -158,8 +160,22 @@ public class Server {
             case EDIT_MASTER -> {
                 editMaster(clientId, request);
             }
+            case NEW_PROTEST -> {
+                newProtest(clientId, request);
+            }
 
         }
+    }
+
+    private void newProtest(int clientId, Request request) {
+        Response response = new Response();
+        String temporaryCourseId = (String) request.getData("temporaryCourseId");
+        String protestTex = (String) request.getData("protestTex");
+        TemporaryCourse temporaryCourse = Load.fetch(TemporaryCourse.class, temporaryCourseId);
+        temporaryCourse.setProtestText(protestTex);
+        Update.update(temporaryCourse);
+        response.setErrorMessage("your protest successfully sent!");
+        findClientAndSendResponse(clientId, response);
     }
 
     private void editMaster(int clientId, Request request) {
@@ -449,6 +465,12 @@ public class Server {
             masters1.add((SharedMaster) master1.toShared());
         }
         response.addData("masters", masters1);
+        List<PassedCourse> passedCourses = Load.fetchAll(PassedCourse.class);
+        ArrayList<sharedmodels.department.PassedCourse> passedCourses1 = new ArrayList<>();
+        for (PassedCourse passedCourse : passedCourses) {
+            passedCourses1.add(passedCourse.toShared());
+        }
+        response.addData("passedCourses", passedCourses1);
         findClientAndSendResponse(clientId, response);
     }
 

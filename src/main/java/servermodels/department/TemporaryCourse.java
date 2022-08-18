@@ -10,7 +10,10 @@ import javax.persistence.*;
 @Entity
 public class TemporaryCourse {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
+    @Column
+    private String courseId;
     @Column
     private double mark;
     @Column
@@ -22,6 +25,8 @@ public class TemporaryCourse {
     private PassStatus status;
     @Column
     private String protestText;
+    @Column
+    private String protestAnswer;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Master master;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -98,6 +103,22 @@ public class TemporaryCourse {
         return student;
     }
 
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getProtestAnswer() {
+        return protestAnswer;
+    }
+
+    public void setProtestAnswer(String protestAnswer) {
+        this.protestAnswer = protestAnswer;
+    }
+
     public void setStudent(Student student) {
         this.student = student;
     }
@@ -111,6 +132,7 @@ public class TemporaryCourse {
         temporaryCourse.setProtestText(protestText);
         temporaryCourse.setUnit(unit);
         temporaryCourse.setStudent((SharedStudent) student.toShared());
+        temporaryCourse.setCourseId(courseId);
         return temporaryCourse;
     }
 }

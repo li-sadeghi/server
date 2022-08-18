@@ -9,7 +9,10 @@ import javax.persistence.*;
 @Entity
 public class PassedCourse {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
+    @Column
+    private String courseId;
     @Column
     private double mark;
     @Column
@@ -91,6 +94,14 @@ public class PassedCourse {
         this.student = student;
     }
 
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
     public sharedmodels.department.PassedCourse toShared(){
         sharedmodels.department.PassedCourse passedCourse = new sharedmodels.department.PassedCourse();
         passedCourse.setId(id);
@@ -100,6 +111,7 @@ public class PassedCourse {
         passedCourse.setStatus(status.toShared());
         passedCourse.setStudent((SharedStudent) student.toShared());
         passedCourse.setUnit(unit);
+        passedCourse.setCourseId(courseId);
         return passedCourse;
     }
 }
