@@ -33,7 +33,7 @@ public class Load {
     }
     public static boolean isExistUser(String username){
         Session session = sessionFactory.openSession();
-        User user = session.get(User.class, username);
+        User user = session.load(User.class, username);
         session.close();
         if (user == null)return false;
         else return true;

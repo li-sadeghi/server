@@ -16,15 +16,17 @@ import java.util.Random;
 public class Student extends User{
     @Column
     private double average;
-    @Column
+    @Column(name = "user_units")
     private int units;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private Department department = new Department();
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private Master helperMaster = new Master();
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "student_department")
+    private Department department;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "student_master")
+    private Master helperMaster;
     @Column
     private String enteringYear;
-    @Column
+    @Column(name = "studentGrade")
     @Enumerated(EnumType.STRING)
     private StudentGrade grade;
     @Column
@@ -35,13 +37,15 @@ public class Student extends User{
     private Licence registrationLicence;
     @Column
     private String registrationTime;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "Student_Course")
-    private List<Course> courses = new ArrayList<>();
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<PassedCourse> passedCourses = new ArrayList<>();
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<TemporaryCourse> temporaryCourses = new ArrayList<>();
+    private List<Course> courses = new ArrayList<>() ;
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @JoinTable(name = "student_passed")
+    private List<PassedCourse> passedCourses  = new ArrayList<>();
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "student_temporary")
+    private List<TemporaryCourse> temporaryCourses  = new ArrayList<>();
 
     public Student(){
         super();
@@ -51,6 +55,7 @@ public class Student extends User{
         super(username, password);
         this.setRole(Role.STUDENT);
         setRegistrationLicence();
+        this.setAverage();
     }
 
     public double getAverage() {
@@ -113,7 +118,7 @@ public class Student extends User{
         return courses;
     }
 
-    public void setCourses(ArrayList<Course> courses) {
+    public void setCourses(List<Course> courses) {
         this.courses = courses;
     }
 
@@ -121,7 +126,7 @@ public class Student extends User{
         return passedCourses;
     }
 
-    public void setPassedCourses(ArrayList<PassedCourse> passedCourses) {
+    public void setPassedCourses(List<PassedCourse> passedCourses) {
         this.passedCourses = passedCourses;
     }
 
@@ -129,7 +134,7 @@ public class Student extends User{
         return temporaryCourses;
     }
 
-    public void setTemporaryCourses(ArrayList<TemporaryCourse> temporaryCourses) {
+    public void setTemporaryCourses(List<TemporaryCourse> temporaryCourses) {
         this.temporaryCourses = temporaryCourses;
     }
 
@@ -145,8 +150,11 @@ public class Student extends User{
         double sum = 0;
         int unitsPassed = 0;
         for (int i = 0; i < size; i++) {
-            //TODO
+            sum += passedCourses.get(i).getMark();
+            unitsPassed += passedCourses.get(i).getUnit();
         }
+        average = sum / unitsPassed;
+        units = unitsPassed;
     }
 
     public int getUnits() {

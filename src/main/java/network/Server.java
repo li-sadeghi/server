@@ -18,6 +18,7 @@ import servermodels.security.Captcha;
 import servermodels.users.Master;
 import servermodels.users.Student;
 import servermodels.users.User;
+import sharedmodels.chatroom.Chat;
 import sharedmodels.users.*;
 import time.DateAndTime;
 import util.extra.EncodeDecodeFile;
@@ -321,7 +322,7 @@ public class Server {
         Master master = Load.fetch(Master.class, masterId);
         Course prerequisiteCourse = Load.fetch(Course.class, prerequisiteId);
         course.setDepartment(department);
-        course.setPrerequisite(prerequisiteCourse);
+        course.setPrerequisiteId(prerequisiteCourse.getPrerequisiteId());
         course.setMaster(master);
         department.getCourses().add(course);
         master.getCourses().add(course);
@@ -370,7 +371,7 @@ public class Server {
         Master master = Load.fetch(Master.class, masterId);
         Course prerequisiteCourse = Load.fetch(Course.class, prerequisiteId);
         course.setDepartment(department);
-        course.setPrerequisite(prerequisiteCourse);
+        course.setPrerequisiteId(prerequisiteCourse.getPrerequisiteId());
         course.setMaster(master);
         department.getCourses().add(course);
         master.getCourses().add(course);
@@ -491,7 +492,67 @@ public class Server {
             masters1.add((SharedMaster) master.toShared());
         }
         response.addData("masters", masters1);
+        ArrayList<Chat> chats = getAllChats(username);
+        List<Student> students =  student.getDepartment().getStudents();
+        ArrayList<SharedStudent> students1 = new ArrayList<>();
+        for (Student student1 : students) {
+            students1.add((SharedStudent) student1.toShared());
+        }
+        response.addData("chats", chats);
+        response.addData("students", students1);
         findClientAndSendResponse(clientId, response);
+    }
+
+    private ArrayList<Chat> getAllChats(String username) {
+        List<Message> messages = Load.fetchAll(Message.class);
+        ArrayList<Chat> chats = new ArrayList<>();
+        ArrayList<String> chatWith = new ArrayList<>();
+        for (Message message : messages) {
+            String sender = message.getSender().getUsername();
+            String receiver = message.getReceiver().getUsername();
+            if (sender.equals(username)){
+                if (isOk(chatWith, receiver))chatWith.add(receiver);
+            }else if (receiver.equals(username)){
+                if (isOk(chatWith, sender))chatWith.add(sender);
+            }
+        }
+        for (String id : chatWith) {
+            ArrayList<sharedmodels.chatroom.Message> messages1 = getAllMessages(messages, username, id);
+            Chat newChat = new Chat();
+            newChat.setMessages(messages1);
+            newChat.setSenderId(username);
+            newChat.setReceiverId(id);
+            User user = Load.fetch(User.class, id);
+            newChat.setReceiverName(user.getFullName());
+            newChat.setReceiverImageByes(user.getUserImageBytes());
+            sharedmodels.chatroom.Message lastMessage = messages1.get(messages1.size() - 1);
+            if (lastMessage.getMessageType() == sharedmodels.chatroom.MessageType.TEXT){
+                newChat.setLastMessage(lastMessage.getMessageText());
+            }else {
+                newChat.setLastMessage("Shared a file!");
+            }
+            chats.add(newChat);
+        }
+        return chats;
+    }
+
+    private ArrayList<sharedmodels.chatroom.Message> getAllMessages(List<Message> messages, String username, String id) {
+        ArrayList<sharedmodels.chatroom.Message> messages1 = new ArrayList<>();
+        for (Message message : messages) {
+            if ((message.getSender().getUsername().equals(username)
+                    && message.getReceiver().getUsername().equals(id))||(message.getReceiver().getUsername().equals(username)
+                    && message.getSender().getUsername().equals(id))){
+                messages1.add(message.toShared());
+            }
+        }
+        return messages1;
+    }
+
+    private boolean isOk(ArrayList<String> ids, String username) {
+        for (String id : ids) {
+            if (id.equals(username))return false;
+        }
+        return true;
     }
 
     private void sendAllMohseniData(int clientId, Request request) {
@@ -592,6 +653,7 @@ public class Server {
             boolean checkTime = CheckDateTime.isOverTime(lastLogin, timeNow);
             if (checkTime){
                 response.setStatus(ResponseStatus.TIME_LIMIT);
+                response.addData("user", user.toShared());
             }else {
                 response.setStatus(ResponseStatus.OK);
                 SharedUser sharedUser = user.toShared();

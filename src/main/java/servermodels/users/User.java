@@ -1,9 +1,8 @@
 package servermodels.users;
-
-import servermodels.department.Department;
 import sharedmodels.users.SharedUser;
 
 import javax.persistence.*;
+
 
 @Entity
 public class User {
@@ -11,7 +10,7 @@ public class User {
     private String username;
     @Column
     private String password;
-    @Column
+    @Column(name = "userRole")
     @Enumerated(EnumType.STRING)
     private Role role;
     @Column

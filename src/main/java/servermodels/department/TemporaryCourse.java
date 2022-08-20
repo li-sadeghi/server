@@ -7,6 +7,7 @@ import sharedmodels.users.SharedStudent;
 
 import javax.persistence.*;
 
+
 @Entity
 public class TemporaryCourse {
     @Id
@@ -27,9 +28,11 @@ public class TemporaryCourse {
     private String protestText;
     @Column
     private String protestAnswer;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "temporary_master")
     private Master master;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "temporary_student")
     private Student student;
 
 

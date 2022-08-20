@@ -1,9 +1,9 @@
 package servermodels.cw;
-
 import servermodels.users.Student;
 import sharedmodels.users.SharedStudent;
 
 import javax.persistence.*;
+
 
 @Entity
 public class Solution {
@@ -12,7 +12,8 @@ public class Solution {
     private int id;
     @Column
     private double mark;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.ALL})
+    @JoinTable(name = "solution_student")
     private Student responsive;
     @Column
     private String answerFileString;

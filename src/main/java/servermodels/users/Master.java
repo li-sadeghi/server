@@ -3,6 +3,7 @@ package servermodels.users;
 import servermodels.department.Course;
 import servermodels.department.Department;
 import sharedmodels.users.SharedMaster;
+import sharedmodels.users.SharedStudent;
 import sharedmodels.users.SharedUser;
 
 import javax.persistence.*;
@@ -14,16 +15,20 @@ public class Master extends User{
     @Column
     @Enumerated(EnumType.STRING)
     private MasterRole masterRole;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private Department department = new Department();
-    @Column
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "master_Department")
+    private Department department ;
+    @Column(name = "masterGrade")
     @Enumerated(EnumType.STRING)
     private MasterGrade grade;
     @Column
     private String roomNumber;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "Master_Course")
-    private List<Course> courses = new ArrayList<>();
+    private List<Course> courses  = new ArrayList<>();
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "master_student")
+    private List<Student> studentsIsHelperMaster = new ArrayList<>();
 
     public Master() {
         super();
@@ -70,8 +75,16 @@ public class Master extends User{
         return courses;
     }
 
-    public void setCourses(ArrayList<Course> courses) {
+    public void setCourses(List<Course> courses) {
         this.courses = courses;
+    }
+
+    public List<Student> getStudentsIsHelperMaster() {
+        return studentsIsHelperMaster;
+    }
+
+    public void setStudentsIsHelperMaster(List<Student> studentsIsHelperMaster) {
+        this.studentsIsHelperMaster = studentsIsHelperMaster;
     }
 
     @Override
@@ -92,6 +105,11 @@ public class Master extends User{
 //        for (Course course : courses)
 //            courses1.add(course.toShared());
 //        }
+        List<SharedStudent> students = new ArrayList<>();
+        for (Student student : studentsIsHelperMaster) {
+            students.add((SharedStudent) student.toShared());
+        }
+        sharedMaster.setStudentsIsHelperMaster(students);
         sharedMaster.setCourses(courses1);
         sharedMaster.setMasterRole(masterRole.toShared());
         return sharedMaster;

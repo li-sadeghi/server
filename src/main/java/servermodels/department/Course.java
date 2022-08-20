@@ -19,9 +19,11 @@ public class Course {
     private String name;
     @Column
     private int capacity;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "course_master")
     private Master master;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "course_department")
     private Department department;
     @Column
     private int unit;
@@ -29,17 +31,20 @@ public class Course {
     private String weeklyTime;
     @Column
     private String examTime;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private Course prerequisite;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @Column
+    private String prerequisiteId;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "course_student_have_course")
     private List<Student> studentsHaveCourse = new ArrayList<>();
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "TA-Course")
-    private List<Student> teacherAssistants = new ArrayList<>();
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private List<EducationalThing> educationalThings = new ArrayList<>();
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private List<HomeWork> homeWorks = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "course_TA_Course")
+    private List<Student> teacherAssistants  = new ArrayList<>();
+    @OneToMany( cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "course_educational")
+    private List<EducationalThing> educationalThings  = new ArrayList<>();
+    @OneToMany( cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "course_homework")
+    private List<HomeWork> homeWorks  = new ArrayList<>();
 
 
     public Course() {
@@ -105,7 +110,7 @@ public class Course {
         return studentsHaveCourse;
     }
 
-    public void setStudentsHaveCourse(ArrayList<Student> studentsHaveCourse) {
+    public void setStudentsHaveCourse(List<Student> studentsHaveCourse) {
         this.studentsHaveCourse = studentsHaveCourse;
     }
 
@@ -113,7 +118,7 @@ public class Course {
         return teacherAssistants;
     }
 
-    public void setTeacherAssistants(ArrayList<Student> teacherAssistants) {
+    public void setTeacherAssistants(List<Student> teacherAssistants) {
         this.teacherAssistants = teacherAssistants;
     }
 
@@ -125,19 +130,19 @@ public class Course {
         this.capacity = capacity;
     }
 
-    public Course getPrerequisite() {
-        return prerequisite;
+    public String getPrerequisiteId() {
+        return prerequisiteId;
     }
 
-    public void setPrerequisite(Course prerequisite) {
-        this.prerequisite = prerequisite;
+    public void setPrerequisiteId(String prerequisiteId) {
+        this.prerequisiteId = prerequisiteId;
     }
 
     public List<EducationalThing> getEducationalThings() {
         return educationalThings;
     }
 
-    public void setEducationalThings(ArrayList<EducationalThing> educationalThings) {
+    public void setEducationalThings(List<EducationalThing> educationalThings) {
         this.educationalThings = educationalThings;
     }
 
@@ -145,7 +150,7 @@ public class Course {
         return homeWorks;
     }
 
-    public void setHomeWorks(ArrayList<HomeWork> homeWorks) {
+    public void setHomeWorks(List<HomeWork> homeWorks) {
         this.homeWorks = homeWorks;
     }
 
@@ -173,7 +178,7 @@ public class Course {
             students2.add((SharedStudent) student.toShared());
         }
         course.setStudentsHaveCourse(students2);
-        course.setPrerequisite(prerequisite.toShared());
+        course.setPrerequisiteId(prerequisiteId);
         ArrayList<sharedmodels.cw.HomeWork> homeWorks1 = new ArrayList<>();
         for (HomeWork homeWork : homeWorks) {
             homeWorks1.add(homeWork.toShared());

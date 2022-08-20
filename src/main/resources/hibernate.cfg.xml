@@ -8,14 +8,14 @@
         <property name="dialect">org.hibernate.dialect.SQLiteDialect</property>
 
 
-<!--                <property name="hbm2ddl.auto">create</property>-->
+                <property name="hbm2ddl.auto">create</property>
 
-        <property name="hbm2ddl.auto">update</property>
+<!--        <property name="hbm2ddl.auto">update</property>-->
 
         <mapping class="servermodels.users.User"/>
-        <mapping class="servermodels.chatroom.Message"/>
         <mapping class="servermodels.users.Student"/>
         <mapping class="servermodels.users.Master"/>
+        <mapping class="servermodels.chatroom.Message"/>
         <mapping class="servermodels.department.Course"/>
         <mapping class="servermodels.department.Department"/>
         <mapping class="servermodels.cw.HomeWork"/>

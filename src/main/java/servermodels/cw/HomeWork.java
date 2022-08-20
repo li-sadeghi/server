@@ -1,5 +1,8 @@
 package servermodels.cw;
 
+
+import servermodels.department.Course;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +13,16 @@ public class HomeWork {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column
+    private String homeWorkName;
+    @Column
     private String homeworkFileString;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private List<Solution> solutions;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.ALL})
+    @JoinTable(name = "homework_solution")
+    private List<Solution> solutions = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.ALL})
+    @JoinTable(name = "homework_course")
+    private Course course;
 
     public HomeWork() {
     }
@@ -41,8 +51,24 @@ public class HomeWork {
         return solutions;
     }
 
-    public void setSolutions(ArrayList<Solution> solutions) {
+    public void setSolutions(List<Solution> solutions) {
         this.solutions = solutions;
+    }
+
+    public String getHomeWorkName() {
+        return homeWorkName;
+    }
+
+    public void setHomeWorkName(String homeWorkName) {
+        this.homeWorkName = homeWorkName;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     public sharedmodels.cw.HomeWork toShared(){
@@ -53,6 +79,7 @@ public class HomeWork {
         for (Solution solution : solutions) {
             solutions1.add(solution.toShared());
         }
+        homeWork.setHomeWorkName(homeWorkName);
         homeWork.setSolutions(solutions1);
         return homeWork;
     }

@@ -6,6 +6,7 @@ import sharedmodels.users.SharedStudent;
 
 import javax.persistence.*;
 
+
 @Entity
 public class PassedCourse {
     @Id
@@ -22,9 +23,11 @@ public class PassedCourse {
     @Column
     @Enumerated(EnumType.STRING)
     private PassStatus status;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "passed_master")
     private Master master;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "passed_student")
     private Student student;
 
 

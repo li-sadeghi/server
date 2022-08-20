@@ -9,12 +9,18 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.ALL})
+    @JoinTable(name = "message_sender")
     private User sender;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.ALL})
+    @JoinTable(name = "message_receiver")
     private User receiver;
     @Column
     private String messageText;
+    @Column
+    private String time;
+    @Column
+    private String fileType;
     @Column
     private MessageType messageType;
 
@@ -61,6 +67,22 @@ public class Message {
         this.receiver = receiver;
     }
 
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     public sharedmodels.chatroom.Message toShared(){
         sharedmodels.chatroom.Message message = new sharedmodels.chatroom.Message();
         message.setId(id);
@@ -68,6 +90,7 @@ public class Message {
         message.setMessageType(messageType.toShared());
         message.setSenderId(sender.getUsername());
         message.setReceiverId(receiver.getUsername());
+        message.setFileType(fileType);
         return message;
     }
 

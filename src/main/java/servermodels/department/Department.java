@@ -16,18 +16,19 @@ public class Department {
     private String id;
     @Column
     private String name;
-    @OneToOne
-    @JoinTable(name = "chairman-department")
-    private Master chairman;
-    @OneToOne
-    @JoinTable(name = "eduAs-department")
-    private Master educationalAssistant;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private List<Course> courses = new ArrayList<>();
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private List<Master> masters = new ArrayList<>();
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private List<Student> students = new ArrayList<>();
+    @Column
+    private String chairmanId;
+    @Column
+    private String educationalAssistantId;
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL})
+    @JoinTable(name = "department_course")
+    private List<Course> courses  = new ArrayList<>();
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL})
+    @JoinTable(name = "department_master")
+    private List<Master> masters  = new ArrayList<>();
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @JoinTable(name = "department_student")
+    private List<Student> students  = new ArrayList<>();
 
     public Department() {
     }
@@ -48,27 +49,27 @@ public class Department {
         this.name = name;
     }
 
-    public Master getChairman() {
-        return chairman;
+    public String getChairmanId() {
+        return chairmanId;
     }
 
-    public void setChairman(Master chairman) {
-        this.chairman = chairman;
+    public void setChairmanId(String chairmanId) {
+        this.chairmanId = chairmanId;
     }
 
-    public Master getEducationalAssistant() {
-        return educationalAssistant;
+    public String getEducationalAssistantId() {
+        return educationalAssistantId;
     }
 
-    public void setEducationalAssistant(Master educationalAssistant) {
-        this.educationalAssistant = educationalAssistant;
+    public void setEducationalAssistantId(String educationalAssistantId) {
+        this.educationalAssistantId = educationalAssistantId;
     }
 
     public List<Course> getCourses() {
         return courses;
     }
 
-    public void setCourses(ArrayList<Course> courses) {
+    public void setCourses(List<Course> courses) {
         this.courses = courses;
     }
 
@@ -76,7 +77,7 @@ public class Department {
         return masters;
     }
 
-    public void setMasters(ArrayList<Master> masters) {
+    public void setMasters(List<Master> masters) {
         this.masters = masters;
     }
 
@@ -84,13 +85,13 @@ public class Department {
         return students;
     }
 
-    public void setStudents(ArrayList<Student> students) {
+    public void setStudents(List<Student> students) {
         this.students = students;
     }
 
     public sharedmodels.department.Department toShared(){
         sharedmodels.department.Department department = new sharedmodels.department.Department();
-        department.setChairman((SharedMaster) chairman.toShared());
+        department.setChairmanId(chairmanId);
         ArrayList<sharedmodels.department.Course> courses1 =new ArrayList<>();
         for (Course course : courses) {
             courses1.add(course.toShared());
@@ -103,7 +104,7 @@ public class Department {
             masters1.add((SharedMaster) master.toShared());
         }
         department.setMasters(masters1);
-        department.setEducationalAssistant((SharedMaster) educationalAssistant.toShared());
+        department.setEducationalAssistantId(educationalAssistantId);
         ArrayList<SharedStudent> students1 = new ArrayList<>();
         for (Student student : students) {
             students1.add((SharedStudent) student.toShared());
