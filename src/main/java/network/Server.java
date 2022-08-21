@@ -170,8 +170,97 @@ public class Server {
             case FILE_MESSAGE -> {
                 fileMessage(clientId, request);
             }
+            case STAR_COURSE -> {
+                starCourse(clientId, request);
+            }
+            case CATCH_COURSE -> {
+                catchCourse(clientId, request);
+            }
+            case REMOVE_COURSE -> {
+                removeCourse(clientId, request);
+            }
 
         }
+    }
+
+    private void starCourse(int clientId, Request request) {
+        Response response = new Response();
+        String courseId = (String) request.getData("courseId");
+        String userId = (String) request.getData("username");
+        Course course = Load.fetch(Course.class, courseId);
+        Student student = Load.fetch(Student.class, userId);
+        boolean isStarred = false;
+        List<Course> starred = student.getStarredCourses();
+        for (Course course1 : starred) {
+            if (course1.getId().equals(courseId))isStarred = true;
+        }
+        if (isStarred){
+            for (Course course1 : starred) {
+                if (course1.getId().equals(courseId))student.getStarredCourses().remove(course1);
+                response.setErrorMessage("your course successfully unstarred!");
+            }
+        }else {
+            student.getStarredCourses().add(course);
+            response.setErrorMessage("your course successfully starred!");
+        }
+        Update.update(student);
+        findClientAndSendResponse(clientId, response);
+    }
+
+    private void catchCourse(int clientId, Request request) {
+        Response response = new Response();
+        String courseId = (String) request.getData("courseId");
+        String userId = (String) request.getData("username");
+        Course course = Load.fetch(Course.class, courseId);
+        Student student = Load.fetch(Student.class, userId);
+        if (student.getUnits() + course.getUnit() > 10){
+            response.setErrorMessage("your units is full");
+        } else if (course.getCapacity() == 0) {
+            response.setErrorMessage("capacity full!!");
+        }else {
+            if (course.isMaaref() && student.haveMaaref()){
+                response.setErrorMessage("only one maaref course!");
+            }else {
+                String pre = course.getPrerequisiteId();
+                if (pre != null && !student.isPassedCourse(pre)){
+                    response.setErrorMessage("Prerequisite not met!");
+                }else if (student.interferenceWeeklyTime(course.getWeeklyTime())){
+                    response.setErrorMessage("interference weekly time!");
+                }else if (student.interferenceExamTime(course.getExamTime())){
+                    response.setErrorMessage("interference exam time!");
+                }else {
+                    student.getCourses().add(course);
+                    course.getStudentsHaveCourse().add(student);
+                    course.setCapacity(course.getCapacity() - 1);
+                    student.setUnits(student.getUnits() + course.getUnit());
+                    Update.update(course);
+                    Update.update(student);
+                    response.setErrorMessage("course successfully catched!");
+                }
+            }
+
+        }
+        findClientAndSendResponse(clientId, response);
+    }
+
+    private void removeCourse(int clientId, Request request) {
+        Response response = new Response();
+        String courseId = (String) request.getData("courseId");
+        String userId = (String) request.getData("username");
+        Student student = Load.fetch(Student.class, userId);
+        List<Course> courses = student.getCourses();
+        for (Course course : courses) {
+            if (course.getId().equals(courseId))student.getCourses().remove(course);
+        }
+        Course course = Load.fetch(Course.class, courseId);
+        course.setCapacity(course.getCapacity() - 1);
+        for (Student student1 : course.getStudentsHaveCourse()) {
+            if (student1.getUsername().equals(userId))course.getStudentsHaveCourse().remove(student1);
+        }
+        Update.update(course);
+        Update.update(student);
+        response.setErrorMessage("your course successfully deleted!");
+        findClientAndSendResponse(clientId, response);
     }
 
     private void fileMessage(int clientId, Request request) {

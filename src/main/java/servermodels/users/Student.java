@@ -202,6 +202,34 @@ public class Student extends User{
         this.department = department;
     }
 
+    public boolean haveMaaref(){
+        for (Course course : courses) {
+            if (course.getDepartment().getName().equals("Maaref"))return true;
+        }
+        return false;
+    }
+
+    public boolean isPassedCourse(String courseId){
+        for (PassedCourse passedCours : passedCourses) {
+            if (passedCours.getId().equals(courseId))return true;
+        }
+        return false;
+    }
+
+    public boolean interferenceWeeklyTime(String weekly){
+        for (Course course : courses) {
+            if (course.getWeeklyTime().equals(weekly))return true;
+        }
+        return false;
+    }
+
+    public boolean interferenceExamTime(String exam){
+        for (Course course : courses) {
+            if (course.getExamTime().equals(exam))return true;
+        }
+        return false;
+    }
+
     @Override
     public SharedUser toShared() {
         SharedStudent sharedStudent = new SharedStudent();

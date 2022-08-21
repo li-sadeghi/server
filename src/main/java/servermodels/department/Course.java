@@ -164,6 +164,11 @@ public class Course {
         this.haveCwPage = haveCwPage;
     }
 
+    public boolean isMaaref(){
+        if (this.department.getName().equals("Maaref"))return true;
+        return false;
+    }
+
     public sharedmodels.department.Course toShared(){
         sharedmodels.department.Course course = new sharedmodels.department.Course();
         course.setCapacity(capacity);
