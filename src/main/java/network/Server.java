@@ -504,6 +504,7 @@ public class Server {
         for (PassedCourse passedCourse : passedCourses) {
             passedCourses1.add(passedCourse.toShared());
         }
+        //TODO
         response.addData("passedCourses", passedCourses1);
         findClientAndSendResponse(clientId, response);
     }

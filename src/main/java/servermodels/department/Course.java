@@ -30,6 +30,8 @@ public class Course {
     @Column
     private String weeklyTime;
     @Column
+    private boolean haveCwPage = false;
+    @Column
     private String examTime;
     @Column
     private String prerequisiteId;
@@ -154,6 +156,14 @@ public class Course {
         this.homeWorks = homeWorks;
     }
 
+    public boolean isHaveCwPage() {
+        return haveCwPage;
+    }
+
+    public void setHaveCwPage(boolean haveCwPage) {
+        this.haveCwPage = haveCwPage;
+    }
+
     public sharedmodels.department.Course toShared(){
         sharedmodels.department.Course course = new sharedmodels.department.Course();
         course.setCapacity(capacity);
@@ -184,6 +194,7 @@ public class Course {
 //            homeWorks1.add(homeWork.getId());
 //        }
 //        course.setHomeWorksId(homeWorks1);
+        course.setDepartmentName(department.getName());
         course.setExamTime(examTime);
         return course;
     }

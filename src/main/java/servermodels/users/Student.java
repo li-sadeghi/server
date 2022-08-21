@@ -42,6 +42,9 @@ public class Student extends User{
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "Student_Course")
     private List<Course> courses = new ArrayList<>() ;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "student_starredCourse")
+    private List<Course> starredCourses = new ArrayList<>();
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinTable(name = "student_passed")
     private List<PassedCourse> passedCourses  = new ArrayList<>();
@@ -147,6 +150,14 @@ public class Student extends User{
 
     public void setTemporaryCourses(List<TemporaryCourse> temporaryCourses) {
         this.temporaryCourses = temporaryCourses;
+    }
+
+    public List<Course> getStarredCourses() {
+        return starredCourses;
+    }
+
+    public void setStarredCourses(List<Course> starredCourses) {
+        this.starredCourses = starredCourses;
     }
 
     public void setRegistrationLicence() {
