@@ -164,8 +164,41 @@ public class Server {
             case NEW_PROTEST -> {
                 newProtest(clientId, request);
             }
+            case SET_SELECTION_TIME -> {
+                setSelectionTime(clientId, request);
+            }
+            case FILE_MESSAGE -> {
+                fileMessage(clientId, request);
+            }
 
         }
+    }
+
+    private void fileMessage(int clientId, Request request) {
+        Message newMessage = new Message();
+        sharedmodels.chatroom.Message message = (sharedmodels.chatroom.Message) request.getData("message");
+        newMessage.setTime(DateAndTime.getDateAndTime());
+        newMessage.setFileType(message.getFileType());
+        newMessage.setMessageType(MessageType.FILE);
+        newMessage.setMessageText(message.getMessageText());
+        String senderId = message.getSenderId();
+        String receiverId = message.getReceiverId();
+        User sender = Load.fetch(User.class, senderId);
+        User receiver = Load.fetch(User.class, receiverId);
+        newMessage.setSender(sender);
+        newMessage.setReceiver(receiver);
+        Save.save(newMessage);
+
+    }
+
+    private void setSelectionTime(int clientId, Request request) {
+        String username = (String) request.getData("username");
+        String startTime = (String) request.getData("startTime");
+        String endTime = (String) request.getData("endTime");
+        Student student = Load.fetch(Student.class, username);
+        student.setRegistrationTimeStart(startTime);
+        student.setRegistrationTimeEnd(endTime);
+        Update.update(student);
     }
 
     private void newProtest(int clientId, Request request) {
@@ -480,6 +513,7 @@ public class Server {
         String username = (String) request.getData("username");
         Student student = Load.fetch(Student.class, username);
         response.addData("user", student.toShared());
+        response.addData("helperMaster", student.getHelperMaster().toShared());
         List<Course> courses = Load.fetchAll(Course.class);
         ArrayList<sharedmodels.department.Course> courses1 = new ArrayList<>();
         for (Course course : courses) {
@@ -512,9 +546,11 @@ public class Server {
             String sender = message.getSender().getUsername();
             String receiver = message.getReceiver().getUsername();
             if (sender.equals(username)){
-                if (isOk(chatWith, receiver))chatWith.add(receiver);
+                if (isOk(chatWith, receiver)&& !receiver.equals("1") && !receiver.equals("2")){
+                    chatWith.add(receiver);
+                }
             }else if (receiver.equals(username)){
-                if (isOk(chatWith, sender))chatWith.add(sender);
+                if (isOk(chatWith, sender)&& !sender.equals("1") && !sender.equals("2"))chatWith.add(sender);
             }
         }
         for (String id : chatWith) {
@@ -585,6 +621,7 @@ public class Server {
         String type = (String) request.getData("type");
         if (type.equals("FILE"))message.setMessageType(MessageType.FILE);
         else message.setMessageType(MessageType.TEXT);
+        message.setTime(DateAndTime.getDateAndTime());
 //        message.setMessageType((MessageType) request.getData("type"));
         Save.save(message);
     }
