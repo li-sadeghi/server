@@ -109,10 +109,10 @@ public class PassedCourse {
         sharedmodels.department.PassedCourse passedCourse = new sharedmodels.department.PassedCourse();
         passedCourse.setId(id);
         passedCourse.setMark(mark);
-        passedCourse.setMaster((SharedStudent) master.toShared());
+        passedCourse.setStudentId( master.getUsername());
         passedCourse.setName(name);
-        passedCourse.setStatus(status.toShared());
-        passedCourse.setStudent((SharedStudent) student.toShared());
+    if (status != null) passedCourse.setStatus(status.toShared());
+        passedCourse.setStudentId( student.getUsername());
         passedCourse.setUnit(unit);
         passedCourse.setCourseId(courseId);
         return passedCourse;

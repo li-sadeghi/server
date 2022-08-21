@@ -92,24 +92,24 @@ public class Department {
     public sharedmodels.department.Department toShared(){
         sharedmodels.department.Department department = new sharedmodels.department.Department();
         department.setChairmanId(chairmanId);
-        ArrayList<sharedmodels.department.Course> courses1 =new ArrayList<>();
+        ArrayList<String> courses1 =new ArrayList<>();
         for (Course course : courses) {
-            courses1.add(course.toShared());
+            courses1.add(course.getId());
         }
-        department.setCourses(courses1);
+        department.setCoursesId(courses1);
         department.setId(id);
         department.setName(name);
-        ArrayList<SharedMaster> masters1 = new ArrayList<>();
+        ArrayList<String> masters1 = new ArrayList<>();
         for (Master master : masters) {
-            masters1.add((SharedMaster) master.toShared());
+            masters1.add(master.getUsername());
         }
-        department.setMasters(masters1);
+        department.setMastersId(masters1);
         department.setEducationalAssistantId(educationalAssistantId);
-        ArrayList<SharedStudent> students1 = new ArrayList<>();
+        ArrayList<String> students1 = new ArrayList<>();
         for (Student student : students) {
-            students1.add((SharedStudent) student.toShared());
+            students1.add( student.getUsername());
         }
-        department.setStudents(students1);
+        department.setStudentsId(students1);
         return department;
     }
 }

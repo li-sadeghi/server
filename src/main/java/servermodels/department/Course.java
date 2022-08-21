@@ -157,33 +157,33 @@ public class Course {
     public sharedmodels.department.Course toShared(){
         sharedmodels.department.Course course = new sharedmodels.department.Course();
         course.setCapacity(capacity);
-        course.setDepartment(department.toShared());
+        course.setDepartmentId(department.getId());
         course.setId(id);
         course.setMaster((SharedMaster) master.toShared());
         course.setName(name);
-        ArrayList<sharedmodels.cw.EducationalThing> educationalThings1 = new ArrayList<>();
-        for (EducationalThing educationalThing : educationalThings) {
-            educationalThings1.add(educationalThing.toShared());
-        }
-        course.setEducationalThings(educationalThings1);
+        ArrayList<Integer> educationalThings1 = new ArrayList<>();
+//        for (EducationalThing educationalThing : educationalThings) {
+//            educationalThings1.add(educationalThing.getId());
+//        }
+        course.setEducationalThingsId(educationalThings1);
         course.setWeeklyTime(weeklyTime);
         course.setUnit(unit);
-        ArrayList<SharedStudent> students1 = new ArrayList<>();
+        ArrayList<String> students1 = new ArrayList<>();
         for (Student student : teacherAssistants) {
-            students1.add((SharedStudent) student.toShared());
+            students1.add(student.getUsername());
         }
-        course.setTeacherAssistants(students1);
-        ArrayList<SharedStudent> students2 = new ArrayList<>();
+        course.setTeacherAssistantsId(students1);
+        ArrayList<String> students2 = new ArrayList<>();
         for (Student student : studentsHaveCourse) {
-            students2.add((SharedStudent) student.toShared());
+            students2.add( student.getUsername());
         }
-        course.setStudentsHaveCourse(students2);
+        course.setStudentsHaveCourseId(students2);
         course.setPrerequisiteId(prerequisiteId);
-        ArrayList<sharedmodels.cw.HomeWork> homeWorks1 = new ArrayList<>();
-        for (HomeWork homeWork : homeWorks) {
-            homeWorks1.add(homeWork.toShared());
-        }
-        course.setHomeWorks(homeWorks1);
+//        ArrayList<Integer> homeWorks1 = new ArrayList<>();
+//        for (HomeWork homeWork : homeWorks) {
+//            homeWorks1.add(homeWork.getId());
+//        }
+//        course.setHomeWorksId(homeWorks1);
         course.setExamTime(examTime);
         return course;
     }

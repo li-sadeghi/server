@@ -496,6 +496,7 @@ public class Server {
         List<Student> students =  student.getDepartment().getStudents();
         ArrayList<SharedStudent> students1 = new ArrayList<>();
         for (Student student1 : students) {
+            if (student1.getUsername().equals(username))continue;
             students1.add((SharedStudent) student1.toShared());
         }
         response.addData("chats", chats);

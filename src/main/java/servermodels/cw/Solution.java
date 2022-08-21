@@ -61,7 +61,7 @@ public class Solution {
         sharedmodels.cw.Solution solution = new sharedmodels.cw.Solution();
         solution.setId(id);
         solution.setMark(mark);
-        solution.setResponsive((SharedStudent) responsive.toShared());
+        solution.setResponsiveId(responsive.getUsername());
         solution.setAnswerFileString(answerFileString);
         return solution;
     }

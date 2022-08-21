@@ -129,12 +129,12 @@ public class TemporaryCourse {
         sharedmodels.department.TemporaryCourse temporaryCourse = new sharedmodels.department.TemporaryCourse();
         temporaryCourse.setId(id);
         temporaryCourse.setMark(mark);
-        temporaryCourse.setMaster((SharedMaster) master.toShared());
+        temporaryCourse.setMasterId( master.getUsername());
         temporaryCourse.setName(name);
         temporaryCourse.setStatus(status.toShared());
         temporaryCourse.setProtestText(protestText);
         temporaryCourse.setUnit(unit);
-        temporaryCourse.setStudent((SharedStudent) student.toShared());
+        temporaryCourse.setStudentId( student.getUsername());
         temporaryCourse.setCourseId(courseId);
         return temporaryCourse;
     }

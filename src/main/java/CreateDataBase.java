@@ -156,7 +156,7 @@ public class CreateDataBase {
         master1.setNationalCode("66458564");
         master1.setFullName("Mojtaba Eslami");
         master1.setEmailAddress("m.eslami@sharif.ir");
-        master1.setUserImageBytes("C:\\Users\\Li\\Desktop\\Masters\\1.jpg");
+        master1.setUserImageBytes(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\1.jpg"));
         master1.setLastLogin(DateAndTime.getDateAndTime());
         master1.setGrade(MasterGrade.FULL_PROFESSOR);
         master1.setMasterRole(MasterRole.MASTER);
@@ -168,7 +168,7 @@ public class CreateDataBase {
         master2.setNationalCode("66164578");
         master2.setFullName("Kazem Hejran");
         master2.setEmailAddress("k.hejran@sharif.ir");
-        master2.setUserImageBytes("C:\\Users\\Li\\Desktop\\Masters\\2.jpg");
+        master2.setUserImageBytes(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\2.jpg"));
         master2.setLastLogin(DateAndTime.getDateAndTime());
         master2.setGrade(MasterGrade.FULL_PROFESSOR);
         master2.setMasterRole(MasterRole.MASTER);
@@ -181,7 +181,7 @@ public class CreateDataBase {
         master3.setNationalCode("66163258");
         master3.setFullName("Mohsen Salehi");
         master3.setEmailAddress("m.salehi@sharif.ir");
-        master3.setUserImageBytes("C:\\Users\\Li\\Desktop\\Masters\\3.jpg");
+        master3.setUserImageBytes(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\3.jpg"));
         master3.setLastLogin(DateAndTime.getDateAndTime());
         master3.setGrade(MasterGrade.FULL_PROFESSOR);
         master3.setMasterRole(MasterRole.MASTER);
@@ -195,7 +195,7 @@ public class CreateDataBase {
         master4.setNationalCode("66164895");
         master4.setFullName("Komeil Kordlheili");
         master4.setEmailAddress("k.kordkheili@sharif.ir");
-        master4.setUserImageBytes("C:\\Users\\Li\\Desktop\\Masters\\4.jpg");
+        master4.setUserImageBytes(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\4.jpg"));
         master4.setLastLogin(DateAndTime.getDateAndTime());
         master4.setGrade(MasterGrade.ASSOCIATE_PROFESSOR);
         master4.setMasterRole(MasterRole.MASTER);
@@ -209,7 +209,7 @@ public class CreateDataBase {
         master5.setNationalCode("66169584");
         master5.setFullName("Abdollah Langari");
         master5.setEmailAddress("a.langari@sharif.ir");
-        master5.setUserImageBytes("C:\\Users\\Li\\Desktop\\Masters\\5.jpg");
+        master5.setUserImageBytes(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\5.jpg"));
         master5.setLastLogin(DateAndTime.getDateAndTime());
         master5.setGrade(MasterGrade.ASSOCIATE_PROFESSOR);
         master5.setMasterRole(MasterRole.MASTER);
@@ -224,7 +224,7 @@ public class CreateDataBase {
         master6.setNationalCode("66168451");
         master6.setFullName("Ehsan Movaffagh");
         master6.setEmailAddress("e.movaffagh@sharif.ir");
-        master6.setUserImageBytes("C:\\Users\\Li\\Desktop\\Masters\\6.jpg");
+        master6.setUserImageBytes(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\6.jpg"));
         master6.setLastLogin(DateAndTime.getDateAndTime());
         master6.setGrade(MasterGrade.ASSOCIATE_PROFESSOR);
         master6.setMasterRole(MasterRole.MASTER);
@@ -237,7 +237,7 @@ public class CreateDataBase {
         master7.setNationalCode("66164738");
         master7.setFullName("Ali Zarei");
         master7.setEmailAddress("a.zarei@sharif.ir");
-        master7.setUserImageBytes("C:\\Users\\Li\\Desktop\\Masters\\4.jpg");
+        master7.setUserImageBytes(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\4.jpg"));
         master7.setLastLogin(DateAndTime.getDateAndTime());
         master7.setGrade(MasterGrade.ASSISTANT_PROFESSOR);
         master7.setMasterRole(MasterRole.EDUCATIONAL_ASSISTANT);
@@ -250,7 +250,7 @@ public class CreateDataBase {
         master8.setNationalCode("66483297");
         master8.setFullName("Ali Dehghani");
         master8.setEmailAddress("a.dehghani@sharif.ir");
-        master8.setUserImageBytes("C:\\Users\\Li\\Desktop\\Masters\\5.jpg");
+        master8.setUserImageBytes(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\5.jpg"));
         master8.setLastLogin(DateAndTime.getDateAndTime());
         master8.setGrade(MasterGrade.ASSISTANT_PROFESSOR);
         master8.setMasterRole(MasterRole.EDUCATIONAL_ASSISTANT);
@@ -264,7 +264,7 @@ public class CreateDataBase {
         master9.setNationalCode("44223794");
         master9.setFullName("Esfandiar Movahhed");
         master9.setEmailAddress("e.movahhed@sharif.ir");
-        master9.setUserImageBytes("C:\\Users\\Li\\Desktop\\Masters\\6.jpg");
+        master9.setUserImageBytes(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\6.jpg"));
         master9.setLastLogin(DateAndTime.getDateAndTime());
         master9.setGrade(MasterGrade.ASSISTANT_PROFESSOR);
         master9.setMasterRole(MasterRole.EDUCATIONAL_ASSISTANT);
@@ -541,8 +541,10 @@ public class CreateDataBase {
         passedCourse.setMark(12.5);
         passedCourse.setUnit(4);
         passedCourse.setName("Basic Programming");
+        passedCourse.setStatus(PassStatus.PASS);
         student1.getPassedCourses().add(passedCourse);
         student1.setAverage();
+        System.out.println(student1.getAverage());
 
 
         TemporaryCourse temporaryCourse = new TemporaryCourse();
@@ -556,65 +558,85 @@ public class CreateDataBase {
         student1.getTemporaryCourses().add(temporaryCourse);
 
 
+        Message message1 = new Message();
+        message1.setMessageText("hi");
+        message1.setMessageType(MessageType.TEXT);
+        message1.setSender(student1);
+        message1.setReceiver(student2);
+        message1.setTime(DateAndTime.getDateAndTime());
+        message1.setFileType("");
+
+//        Message message = new Message();
+//        message.setMessageText("hi");
+//        message.setMessageType(MessageType.TEXT);
+//        message.setSender(student1);
+//        message.setReceiver(student2);
+//        message.setTime(DateAndTime.getDateAndTime());
+//        message.setFileType("");
+
+
+
         Session session = Save.sessionFactory.openSession();
         session.beginTransaction();
         session.save(mrMohseni);
         session.save(admin);
 
 
-        session.persist(student1);
-        session.persist(student2);
-        session.persist(student3);
-        session.persist(student4);
-        session.persist(student5);
-        session.persist(student6);
-        session.persist(student7);
-        session.persist(student8);
-        session.persist(student9);
+        session.save(student1);
+        session.save(student2);
+        session.save(student3);
+        session.save(student4);
+        session.save(student5);
+        session.save(student6);
+        session.save(student7);
+        session.save(student8);
+        session.save(student9);
 
-        session.persist(master1);
-        session.persist(master2);
-        session.persist(master3);
-        session.persist(master4);
-        session.persist(master5);
-        session.persist(master6);
-        session.persist(master7);
-        session.persist(master8);
-        session.persist(master9);
+        session.save(master1);
+        session.save(master2);
+        session.save(master3);
+        session.save(master4);
+        session.save(master5);
+        session.save(master6);
+        session.save(master7);
+        session.save(master8);
+        session.save(master9);
 
-        session.persist(course1);
-        session.persist(course2);
-        session.persist(course3);
-        session.persist(course4);
-        session.persist(course5);
-        session.persist(course6);
-        session.persist(course7);
-        session.persist(course8);
+        session.save(course1);
+        session.save(course2);
+        session.save(course3);
+        session.save(course4);
+        session.save(course5);
+        session.save(course6);
+        session.save(course7);
+        session.save(course8);
 
-        session.persist(mrMohseni);
-        session.persist(admin);
-
-
-        session.persist(homeWork1);
-        session.persist(homeWork2);
-        session.persist(homeWork3);
-        session.persist(homeWork4);
-        session.persist(homeWork5);
+        session.save(mrMohseni);
+        session.save(admin);
 
 
-        session.persist(educationalThing1);
-        session.persist(educationalThing2);
-        session.persist(educationalThing3);
-        session.persist(educationalThing4);
+        session.save(homeWork1);
+        session.save(homeWork2);
+        session.save(homeWork3);
+        session.save(homeWork4);
+        session.save(homeWork5);
 
 
-        session.persist(passedCourse);
-        session.persist(temporaryCourse);
+        session.save(educationalThing1);
+        session.save(educationalThing2);
+        session.save(educationalThing3);
+        session.save(educationalThing4);
 
 
-        session.persist(department1);
-        session.persist(department2);
-        session.persist(department3);
+        session.save(passedCourse);
+        session.save(temporaryCourse);
+
+
+        session.save(department1);
+        session.save(department2);
+        session.save(department3);
+
+        session.save(message1);
 
         session.getTransaction().commit();
         session.close();

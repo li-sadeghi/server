@@ -75,12 +75,12 @@ public class HomeWork {
         sharedmodels.cw.HomeWork homeWork = new sharedmodels.cw.HomeWork();
         homeWork.setHomeworkFileString(homeworkFileString);
         homeWork.setId(id);
-        ArrayList<sharedmodels.cw.Solution> solutions1 = new ArrayList<>();
+        ArrayList<Integer> solutions1 = new ArrayList<>();
         for (Solution solution : solutions) {
-            solutions1.add(solution.toShared());
+            solutions1.add(solution.getId());
         }
         homeWork.setHomeWorkName(homeWorkName);
-        homeWork.setSolutions(solutions1);
+        homeWork.setSolutionsId(solutions1);
         return homeWork;
     }
 

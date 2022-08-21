@@ -100,17 +100,17 @@ public class Master extends User{
         sharedMaster.setFullName(getFullName());
         sharedMaster.setRoomNumber(roomNumber);
         sharedMaster.setGrade(grade.toShared());
-//        sharedMaster.setDepartment(department.toShared());
-        ArrayList<sharedmodels.department.Course> courses1 =new ArrayList<>();
-//        for (Course course : courses)
-//            courses1.add(course.toShared());
-//        }
-        List<SharedStudent> students = new ArrayList<>();
+        sharedMaster.setDepartmentId(department.getId());
+        ArrayList<String> courses1 =new ArrayList<>();
+        for (Course course : courses)
+            courses1.add(course.getId());
+
+        List<String> students = new ArrayList<>();
         for (Student student : studentsIsHelperMaster) {
-            students.add((SharedStudent) student.toShared());
+            students.add( student.getUsername());
         }
-        sharedMaster.setStudentsIsHelperMaster(students);
-        sharedMaster.setCourses(courses1);
+        sharedMaster.setStudentsIsHelperMasterIds(students);
+        sharedMaster.setCoursesId(courses1);
         sharedMaster.setMasterRole(masterRole.toShared());
         return sharedMaster;
     }
