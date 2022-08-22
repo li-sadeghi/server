@@ -625,6 +625,37 @@ public class Server {
         }
         response.addData("chats", chats);
         response.addData("students", students1);
+        response.addData("helperMaster", student.getHelperMaster().toShared());
+        response.addData("department", student.getDepartment().toShared());
+
+        List<TemporaryCourse> temporaryCourses = student.getTemporaryCourses();
+        ArrayList<sharedmodels.department.TemporaryCourse> temporaryCourses1 = new ArrayList<>();
+        for (TemporaryCourse temporaryCourse : temporaryCourses) {
+            temporaryCourses1.add(temporaryCourse.toShared());
+        }
+        response.addData("temporaryCourses", temporaryCourses1);
+        List<PassedCourse> passedCourses = student.getPassedCourses();
+        ArrayList<sharedmodels.department.PassedCourse>passedCourses1 = new ArrayList<>();
+        for (PassedCourse passedCourse : passedCourses) {
+            passedCourses1.add(passedCourse.toShared());
+        }
+        response.addData("passedCourses", passedCourses1);
+        List<Course> courseList = student.getCourses();
+        ArrayList<sharedmodels.department.Course> courses2 = new ArrayList<>();
+        for (Course course : courseList) {
+            courses2.add(course.toShared());
+        }
+        response.addData("coursesHave", courses2);
+        List<Course> courseList1 = student.getStarredCourses();
+        ArrayList<sharedmodels.department.Course> starredCourses = new ArrayList<>();
+        for (Course course : courseList1) {
+            starredCourses.add(course.toShared());
+        }
+        response.addData("starredCourses", starredCourses);
+
+        //TODO
+        //send suggested courses for student
+
         findClientAndSendResponse(clientId, response);
     }
 

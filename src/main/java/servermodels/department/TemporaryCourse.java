@@ -25,9 +25,9 @@ public class TemporaryCourse {
     @Enumerated(EnumType.STRING)
     private PassStatus status;
     @Column
-    private String protestText;
+    private String protestText = "";
     @Column
-    private String protestAnswer;
+    private String protestAnswer = "";
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "temporary_master")
     private Master master;
