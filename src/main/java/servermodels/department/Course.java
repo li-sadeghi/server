@@ -1,5 +1,6 @@
 package servermodels.department;
 
+import load.Load;
 import servermodels.cw.EducationalThing;
 import servermodels.cw.HomeWork;
 import servermodels.users.Master;
@@ -41,10 +42,10 @@ public class Course {
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "course_TA_Course")
     private List<Student> teacherAssistants  = new ArrayList<>();
-    @OneToMany( cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany( fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.ALL})
     @JoinTable(name = "course_educational")
     private List<EducationalThing> educationalThings  = new ArrayList<>();
-    @OneToMany( cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany( fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.ALL})
     @JoinTable(name = "course_homework")
     private List<HomeWork> homeWorks  = new ArrayList<>();
 
@@ -194,14 +195,41 @@ public class Course {
         }
         course.setStudentsHaveCourseId(students2);
         course.setPrerequisiteId(prerequisiteId);
-//        ArrayList<Integer> homeWorks1 = new ArrayList<>();
+        ArrayList<Integer> homeWorks1 = getHWIds();
+        course.setHomeWorksId(homeWorks1);
+//        ArrayList<Integer> homeworksId = new ArrayList<>();
 //        for (HomeWork homeWork : homeWorks) {
-//            homeWorks1.add(homeWork.getId());
+//            homeworksId.add(homeWork.getId());
 //        }
-//        course.setHomeWorksId(homeWorks1);
+//        course.setHomeWorksId(homeworksId);
+        ArrayList<Integer> educationalThingsId = getEduIds();
+        course.setEducationalThingsId(educationalThingsId);
         course.setDepartmentName(department.getName());
         course.setExamTime(examTime);
+        course.setHaveCwPage(haveCwPage);
         return course;
     }
+
+    private ArrayList<Integer> getEduIds(){
+        ArrayList<Integer> educationalThingsId = new ArrayList<>();
+        List<EducationalThing> educationalThings1 = Load.fetchAll(EducationalThing.class);
+        for (EducationalThing educationalThing : educationalThings1) {
+            if (educationalThing.getCourse().getId() == id){
+                educationalThingsId.add(educationalThing.getId());
+            }
+        }
+        return educationalThingsId;
+    }
+    private ArrayList<Integer> getHWIds(){
+        ArrayList<Integer> hwIds = new ArrayList<>();
+        List<HomeWork> homeWorkArrayList = Load.fetchAll(HomeWork.class);
+        for (HomeWork homeWork : homeWorkArrayList) {
+            if (homeWork.getCourse().getId() == id){
+                hwIds.add(homeWork.getId());
+            }
+        }
+        return hwIds;
+    }
+
 
 }

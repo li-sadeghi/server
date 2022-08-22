@@ -472,13 +472,20 @@ public class CreateDataBase {
         homeWork1.setHomeworkFileString(EncodeDecodeFile.encode("D:\\University\\Term4\\AP\\HWs\\HW1\\HW1.pdf"));
         homeWork1.setHomeWorkName("basic questions");
 
+        homeWork1.setStartTime(DateAndTime.getDateAndTime());
+        homeWork1.setEndTime(DateAndTime.getFormatTime(LocalDateTime.of(2022, 12, 25, 14, 0, 0)));
 
         HomeWork homeWork2 = new HomeWork();
         homeWork2.setHomeworkFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Downloads\\Video\\video.mp4"));
         homeWork2.setHomeWorkName("how to use");
+        homeWork2.setStartTime(DateAndTime.getDateAndTime());
+        homeWork2.setEndTime(DateAndTime.getFormatTime(LocalDateTime.of(2022, 12, 25, 14, 0, 0)));
+
 
         course3.getHomeWorks().add(homeWork1);
         course3.getHomeWorks().add(homeWork2);
+        homeWork1.setCourse(course3);
+        homeWork2.setCourse(course3);
 
         EducationalThing educationalThing1 = new EducationalThing();
         educationalThing1.setName("how to use");
@@ -491,21 +498,28 @@ public class CreateDataBase {
 
         course1.getEducationalThings().add(educationalThing1);
         course1.getEducationalThings().add(educationalThing2);
+        educationalThing1.setCourse(course1);
+        educationalThing2.setCourse(course1);
 
         HomeWork homeWork3 = new HomeWork();
         homeWork3.setHomeWorkName("home work1");
         homeWork3.setHomeworkFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Downloads\\Video\\video.mp4"));
+        homeWork3.setStartTime(DateAndTime.getDateAndTime());
+        homeWork3.setEndTime(DateAndTime.getFormatTime(LocalDateTime.of(2022, 12, 25, 14, 0, 0)));
+
 
         HomeWork homeWork4 = new HomeWork();
         homeWork4.setHomeWorkName("home work2");
         homeWork4.setHomeworkFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Downloads\\Video\\video.mp4"));
-
+        homeWork4.setStartTime(DateAndTime.getDateAndTime());
+        homeWork4.setEndTime(DateAndTime.getFormatTime(LocalDateTime.of(2022, 12, 25, 14, 0, 0)));
 
 
         HomeWork homeWork5 = new HomeWork();
         homeWork5.setHomeWorkName("home wok 5");
         homeWork5.setHomeworkFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Downloads\\Video\\video.mp4"));
-
+        homeWork5.setStartTime(DateAndTime.getDateAndTime());
+        homeWork5.setEndTime(DateAndTime.getFormatTime(LocalDateTime.of(2022, 12, 25, 14, 0, 0)));
 
 
 
@@ -513,7 +527,9 @@ public class CreateDataBase {
         course7.getHomeWorks().add(homeWork3);
         course7.getHomeWorks().add(homeWork4);
         course7.getHomeWorks().add(homeWork5);
-
+        homeWork3.setCourse(course7);
+        homeWork4.setCourse(course7);
+        homeWork5.setCourse(course7);
 
 
         EducationalThing educationalThing3 = new EducationalThing();
@@ -527,6 +543,8 @@ public class CreateDataBase {
         educationalThing4.setFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Downloads\\Video\\video.mp4"));
         course7.getEducationalThings().add(educationalThing4);
 
+        educationalThing3.setCourse(course7);
+        educationalThing4.setCourse(course7);
 
         course1.getStudentsHaveCourse().add(student1);
         course7.getStudentsHaveCourse().add(student2);

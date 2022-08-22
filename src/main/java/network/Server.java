@@ -10,6 +10,7 @@ import save.Save;
 import save.Update;
 import servermodels.chatroom.Message;
 import servermodels.chatroom.MessageType;
+import servermodels.cw.HomeWork;
 import servermodels.department.Course;
 import servermodels.department.Department;
 import servermodels.department.PassedCourse;
@@ -179,8 +180,19 @@ public class Server {
             case REMOVE_COURSE -> {
                 removeCourse(clientId, request);
             }
+            case GET_HOMEWORK -> {
+                sendHomeWork(clientId, request);
+            }
 
         }
+    }
+
+    private void sendHomeWork(int clientId, Request request) {
+        Response response = new Response();
+        int id = (int) request.getData("id");
+        HomeWork homeWork = Load.fetch(HomeWork.class, id);
+        response.addData("homework", homeWork.toShared());
+        findClientAndSendResponse(clientId, response);
     }
 
     private void starCourse(int clientId, Request request) {

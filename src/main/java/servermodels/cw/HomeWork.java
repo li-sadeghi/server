@@ -16,7 +16,11 @@ public class HomeWork {
     private String homeWorkName;
     @Column
     private String homeworkFileString;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.ALL})
+    @Column(name = "homework_start")
+    private String startTime;
+    @Column(name = "homework_end")
+    private String endTime;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "homework_solution")
     private List<Solution> solutions = new ArrayList<>();
 
@@ -71,6 +75,22 @@ public class HomeWork {
         this.course = course;
     }
 
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
     public sharedmodels.cw.HomeWork toShared(){
         sharedmodels.cw.HomeWork homeWork = new sharedmodels.cw.HomeWork();
         homeWork.setHomeworkFileString(homeworkFileString);
@@ -81,6 +101,8 @@ public class HomeWork {
         }
         homeWork.setHomeWorkName(homeWorkName);
         homeWork.setSolutionsId(solutions1);
+        homeWork.setStartTime(startTime);
+        homeWork.setEndTime(endTime);
         return homeWork;
     }
 
