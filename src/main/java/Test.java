@@ -4,6 +4,8 @@ import save.Save;
 import save.Update;
 import servermodels.chatroom.Message;
 import servermodels.chatroom.MessageType;
+import servermodels.cw.HomeWork;
+import servermodels.department.Course;
 import servermodels.department.Department;
 import servermodels.users.Master;
 import servermodels.users.MasterRole;
@@ -39,6 +41,13 @@ public class Test {
 //        Update.update(master);
 
 
-        Student student = Load.fetch(Student.class, "99108223");
+//        Student student = Load.fetch(Student.class, "99108223");
+
+//        Course course = Load.fetch(Course.class, "77777");
+//        course.setHaveCwPage(true);
+//        Update.update(course);
+//        HomeWork homeWork = Load.fetch(HomeWork.class , 1);
+//        System.out.println(homeWork.getEndTime());
+
     }
 }

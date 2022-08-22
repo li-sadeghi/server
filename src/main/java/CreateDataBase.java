@@ -469,14 +469,14 @@ public class CreateDataBase {
         course4.getTeacherAssistants().add(student5);
 
         HomeWork homeWork1 = new HomeWork();
-        homeWork1.setHomeworkFileString(EncodeDecodeFile.encode("D:\\University\\Term4\\AP\\HWs\\HW1\\HW1.pdf"));
+        homeWork1.setHomeworkFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\6.jpg"));
         homeWork1.setHomeWorkName("basic questions");
 
         homeWork1.setStartTime(DateAndTime.getDateAndTime());
         homeWork1.setEndTime(DateAndTime.getFormatTime(LocalDateTime.of(2022, 12, 25, 14, 0, 0)));
 
         HomeWork homeWork2 = new HomeWork();
-        homeWork2.setHomeworkFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Downloads\\Video\\video.mp4"));
+        homeWork2.setHomeworkFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\6.jpg"));
         homeWork2.setHomeWorkName("how to use");
         homeWork2.setStartTime(DateAndTime.getDateAndTime());
         homeWork2.setEndTime(DateAndTime.getFormatTime(LocalDateTime.of(2022, 12, 25, 14, 0, 0)));
@@ -489,12 +489,12 @@ public class CreateDataBase {
 
         EducationalThing educationalThing1 = new EducationalThing();
         educationalThing1.setName("how to use");
-        educationalThing1.setFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Downloads\\Video\\video.mp4"));
+        educationalThing1.setFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\6.jpg"));
 
 
         EducationalThing educationalThing2 = new EducationalThing();
         educationalThing2.setName("how to download");
-        educationalThing2.setFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Downloads\\Video\\video.mp4"));
+        educationalThing2.setFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\6.jpg"));
 
         course1.getEducationalThings().add(educationalThing1);
         course1.getEducationalThings().add(educationalThing2);
@@ -503,21 +503,21 @@ public class CreateDataBase {
 
         HomeWork homeWork3 = new HomeWork();
         homeWork3.setHomeWorkName("home work1");
-        homeWork3.setHomeworkFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Downloads\\Video\\video.mp4"));
+        homeWork3.setHomeworkFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\6.jpg"));
         homeWork3.setStartTime(DateAndTime.getDateAndTime());
         homeWork3.setEndTime(DateAndTime.getFormatTime(LocalDateTime.of(2022, 12, 25, 14, 0, 0)));
 
 
         HomeWork homeWork4 = new HomeWork();
         homeWork4.setHomeWorkName("home work2");
-        homeWork4.setHomeworkFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Downloads\\Video\\video.mp4"));
+        homeWork4.setHomeworkFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\6.jpg"));
         homeWork4.setStartTime(DateAndTime.getDateAndTime());
         homeWork4.setEndTime(DateAndTime.getFormatTime(LocalDateTime.of(2022, 12, 25, 14, 0, 0)));
 
 
         HomeWork homeWork5 = new HomeWork();
         homeWork5.setHomeWorkName("home wok 5");
-        homeWork5.setHomeworkFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Downloads\\Video\\video.mp4"));
+        homeWork5.setHomeworkFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\6.jpg"));
         homeWork5.setStartTime(DateAndTime.getDateAndTime());
         homeWork5.setEndTime(DateAndTime.getFormatTime(LocalDateTime.of(2022, 12, 25, 14, 0, 0)));
 
@@ -534,13 +534,13 @@ public class CreateDataBase {
 
         EducationalThing educationalThing3 = new EducationalThing();
         educationalThing3.setName("a video to education");
-        educationalThing3.setFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Downloads\\Video\\video.mp4"));
+        educationalThing3.setFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\6.jpg"));
         course7.getEducationalThings().add(educationalThing3);
 
 
         EducationalThing educationalThing4 = new EducationalThing();
         educationalThing4.setName("a video for you");
-        educationalThing4.setFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Downloads\\Video\\video.mp4"));
+        educationalThing4.setFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\6.jpg"));
         course7.getEducationalThings().add(educationalThing4);
 
         educationalThing3.setCourse(course7);

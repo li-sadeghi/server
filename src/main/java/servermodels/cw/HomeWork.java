@@ -20,12 +20,12 @@ public class HomeWork {
     private String startTime;
     @Column(name = "homework_end")
     private String endTime;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "homework_solution")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "homeWork", cascade = {CascadeType.PERSIST, CascadeType.ALL})
+
     private List<Solution> solutions = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "homework_course")
+    @JoinTable(name = "course_homework")
     private Course course;
 
     public HomeWork() {
@@ -103,6 +103,7 @@ public class HomeWork {
         homeWork.setSolutionsId(solutions1);
         homeWork.setStartTime(startTime);
         homeWork.setEndTime(endTime);
+        homeWork.setCourseId(course.getId());
         return homeWork;
     }
 

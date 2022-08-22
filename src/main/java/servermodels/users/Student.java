@@ -19,10 +19,10 @@ public class Student extends User{
     @Column(name = "user_units")
     private int units;
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "student_department")
+
     private Department department;
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "student_master")
+
     private Master helperMaster;
     @Column
     private String enteringYear;
@@ -45,11 +45,11 @@ public class Student extends User{
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "student_starredCourse")
     private List<Course> starredCourses = new ArrayList<>();
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    @JoinTable(name = "student_passed")
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "student", cascade = {CascadeType.ALL})
+
     private List<PassedCourse> passedCourses  = new ArrayList<>();
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "student_temporary")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "student",cascade = CascadeType.ALL)
+
     private List<TemporaryCourse> temporaryCourses  = new ArrayList<>();
 
     public Student(){

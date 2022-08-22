@@ -17,6 +17,9 @@ public class Solution {
     private Student responsive;
     @Column
     private String answerFileString;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "sol_homework")
+    private HomeWork homeWork;
 
     public Solution() {
     }
@@ -57,6 +60,15 @@ public class Solution {
     public void setMark(double mark) {
         this.mark = mark;
     }
+
+    public HomeWork getHomeWork() {
+        return homeWork;
+    }
+
+    public void setHomeWork(HomeWork homeWork) {
+        this.homeWork = homeWork;
+    }
+
     public sharedmodels.cw.Solution toShared(){
         sharedmodels.cw.Solution solution = new sharedmodels.cw.Solution();
         solution.setId(id);

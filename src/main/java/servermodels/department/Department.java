@@ -20,14 +20,14 @@ public class Department {
     private String chairmanId;
     @Column
     private String educationalAssistantId;
-    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL})
-    @JoinTable(name = "department_course")
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "department", cascade = { CascadeType.ALL})
+
     private List<Course> courses  = new ArrayList<>();
-    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL})
-    @JoinTable(name = "department_master")
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "department", cascade = { CascadeType.ALL})
+
     private List<Master> masters  = new ArrayList<>();
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    @JoinTable(name = "department_student")
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "department",cascade = {CascadeType.ALL})
+
     private List<Student> students  = new ArrayList<>();
 
     public Department() {

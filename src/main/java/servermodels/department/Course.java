@@ -10,7 +10,9 @@ import sharedmodels.users.SharedStudent;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Course {
@@ -42,12 +44,12 @@ public class Course {
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "course_TA_Course")
     private List<Student> teacherAssistants  = new ArrayList<>();
-    @OneToMany( fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.ALL})
-    @JoinTable(name = "course_educational")
-    private List<EducationalThing> educationalThings  = new ArrayList<>();
-    @OneToMany( fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.ALL})
-    @JoinTable(name = "course_homework")
-    private List<HomeWork> homeWorks  = new ArrayList<>();
+    @OneToMany( fetch = FetchType.EAGER, mappedBy = "course",cascade = { CascadeType.ALL})
+
+    private Set<EducationalThing> educationalThings  = new HashSet<>();
+    @OneToMany( fetch = FetchType.EAGER, mappedBy = "course",cascade = {CascadeType.ALL})
+
+    private Set<HomeWork> homeWorks  = new HashSet<>();
 
 
     public Course() {
@@ -141,19 +143,19 @@ public class Course {
         this.prerequisiteId = prerequisiteId;
     }
 
-    public List<EducationalThing> getEducationalThings() {
+    public Set<EducationalThing> getEducationalThings() {
         return educationalThings;
     }
 
-    public void setEducationalThings(List<EducationalThing> educationalThings) {
+    public void setEducationalThings(Set<EducationalThing> educationalThings) {
         this.educationalThings = educationalThings;
     }
 
-    public List<HomeWork> getHomeWorks() {
+    public Set<HomeWork> getHomeWorks() {
         return homeWorks;
     }
 
-    public void setHomeWorks(List<HomeWork> homeWorks) {
+    public void setHomeWorks(Set<HomeWork> homeWorks) {
         this.homeWorks = homeWorks;
     }
 
@@ -177,11 +179,6 @@ public class Course {
         course.setId(id);
         course.setMaster((SharedMaster) master.toShared());
         course.setName(name);
-        ArrayList<Integer> educationalThings1 = new ArrayList<>();
-//        for (EducationalThing educationalThing : educationalThings) {
-//            educationalThings1.add(educationalThing.getId());
-//        }
-        course.setEducationalThingsId(educationalThings1);
         course.setWeeklyTime(weeklyTime);
         course.setUnit(unit);
         ArrayList<String> students1 = new ArrayList<>();
@@ -195,40 +192,20 @@ public class Course {
         }
         course.setStudentsHaveCourseId(students2);
         course.setPrerequisiteId(prerequisiteId);
-        ArrayList<Integer> homeWorks1 = getHWIds();
-        course.setHomeWorksId(homeWorks1);
-//        ArrayList<Integer> homeworksId = new ArrayList<>();
-//        for (HomeWork homeWork : homeWorks) {
-//            homeworksId.add(homeWork.getId());
-//        }
-//        course.setHomeWorksId(homeworksId);
-        ArrayList<Integer> educationalThingsId = getEduIds();
+        ArrayList<Integer> homeWorksId = new ArrayList<>();
+        for (HomeWork homeWork : homeWorks) {
+            homeWorksId.add(homeWork.getId());
+        }
+        course.setHomeWorksId(homeWorksId);
+        ArrayList<Integer> educationalThingsId = new ArrayList<>();
+        for (EducationalThing educationalThing : educationalThings) {
+            educationalThingsId.add(educationalThing.getId());
+        }
         course.setEducationalThingsId(educationalThingsId);
         course.setDepartmentName(department.getName());
         course.setExamTime(examTime);
         course.setHaveCwPage(haveCwPage);
         return course;
-    }
-
-    private ArrayList<Integer> getEduIds(){
-        ArrayList<Integer> educationalThingsId = new ArrayList<>();
-        List<EducationalThing> educationalThings1 = Load.fetchAll(EducationalThing.class);
-        for (EducationalThing educationalThing : educationalThings1) {
-            if (educationalThing.getCourse().getId() == id){
-                educationalThingsId.add(educationalThing.getId());
-            }
-        }
-        return educationalThingsId;
-    }
-    private ArrayList<Integer> getHWIds(){
-        ArrayList<Integer> hwIds = new ArrayList<>();
-        List<HomeWork> homeWorkArrayList = Load.fetchAll(HomeWork.class);
-        for (HomeWork homeWork : homeWorkArrayList) {
-            if (homeWork.getCourse().getId() == id){
-                hwIds.add(homeWork.getId());
-            }
-        }
-        return hwIds;
     }
 
 

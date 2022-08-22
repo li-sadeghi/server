@@ -23,11 +23,11 @@ public class Master extends User{
     private MasterGrade grade;
     @Column
     private String roomNumber;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "Master_Course")
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "master",cascade = CascadeType.ALL)
+
     private List<Course> courses  = new ArrayList<>();
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "master_student")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "helperMaster",cascade = CascadeType.ALL)
+
     private List<Student> studentsIsHelperMaster = new ArrayList<>();
 
     public Master() {

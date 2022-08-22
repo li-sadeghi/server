@@ -181,13 +181,13 @@ public class Server {
                 removeCourse(clientId, request);
             }
             case GET_HOMEWORK -> {
-                sendHomeWork(clientId, request);
+                sendHomeWorks(clientId, request);
             }
 
         }
     }
 
-    private void sendHomeWork(int clientId, Request request) {
+    private void sendHomeWorks(int clientId, Request request) {
         Response response = new Response();
         int id = (int) request.getData("id");
         HomeWork homeWork = Load.fetch(HomeWork.class, id);
