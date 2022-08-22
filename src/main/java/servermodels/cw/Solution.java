@@ -12,7 +12,7 @@ public class Solution {
     private int id;
     @Column
     private double mark;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.ALL})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "solution_student")
     private Student responsive;
     @Column

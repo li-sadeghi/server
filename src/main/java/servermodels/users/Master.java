@@ -15,7 +15,7 @@ public class Master extends User{
     @Column
     @Enumerated(EnumType.STRING)
     private MasterRole masterRole;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "master_Department")
     private Department department ;
     @Column(name = "masterGrade")

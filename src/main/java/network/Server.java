@@ -593,8 +593,38 @@ public class Server {
         for (PassedCourse passedCourse : passedCourses) {
             passedCourses1.add(passedCourse.toShared());
         }
-        //TODO
+        ArrayList<Chat> chats = getAllChats(username);
+        List<Student> students =  Load.fetchAll(Student.class);
+        ArrayList<SharedStudent> students1 = new ArrayList<>();
+        for (Student student1 : students) {
+            students1.add((SharedStudent) student1.toShared());
+        }
+        response.addData("chats", chats);
+        response.addData("allStudents", students1);
         response.addData("passedCourses", passedCourses1);
+        response.addData("department", master.getDepartment().toShared());
+        List<TemporaryCourse> temporaryCourses = Load.fetchAll(TemporaryCourse.class);
+        ArrayList<sharedmodels.department.TemporaryCourse> temporaryCourses1 = new ArrayList<>();
+        for (TemporaryCourse temporaryCourse : temporaryCourses) {
+            temporaryCourses1.add(temporaryCourse.toShared());
+        }
+        response.addData("temporaryCourses", temporaryCourses1);
+        ArrayList<sharedmodels.department.Course> coursesHave = new ArrayList<>();
+        for (Course course : master.getCourses()) {
+            coursesHave.add(course.toShared());
+        }
+        response.addData("coursesHave",coursesHave );
+        List<Student> studentList;
+        if (master.getMasterRole() == servermodels.users.MasterRole.CHAIRMAN || master.getMasterRole() == servermodels.users.MasterRole.EDUCATIONAL_ASSISTANT){
+            studentList = master.getDepartment().getStudents();
+        }else {
+            studentList = master.getStudentsIsHelperMaster();
+        }
+        ArrayList<SharedStudent> sharedStudents = new ArrayList<>();
+        for (Student student : studentList) {
+            sharedStudents.add((SharedStudent) student.toShared());
+        }
+        response.addData("students", sharedStudents);
         findClientAndSendResponse(clientId, response);
     }
 
@@ -743,7 +773,7 @@ public class Server {
         if (type.equals("FILE"))message.setMessageType(MessageType.FILE);
         else message.setMessageType(MessageType.TEXT);
         message.setTime(DateAndTime.getDateAndTime());
-//        message.setMessageType((MessageType) request.getData("type"));
+        message.setFileType("");
         Save.save(message);
     }
 

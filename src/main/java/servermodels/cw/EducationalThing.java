@@ -15,7 +15,7 @@ public class EducationalThing {
     private String name;
     @Column
     private String fileString;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.ALL})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "educational_course")
     private Course course;
 

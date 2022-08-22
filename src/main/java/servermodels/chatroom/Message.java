@@ -9,10 +9,10 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.ALL})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     @JoinTable(name = "message_sender")
     private User sender;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.ALL})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     @JoinTable(name = "message_receiver")
     private User receiver;
     @Column
@@ -91,6 +91,7 @@ public class Message {
         message.setSenderId(sender.getUsername());
         message.setReceiverId(receiver.getUsername());
         message.setFileType(fileType);
+        message.setTime(time);
         return message;
     }
 
