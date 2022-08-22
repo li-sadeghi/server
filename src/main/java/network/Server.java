@@ -11,6 +11,7 @@ import save.Update;
 import servermodels.chatroom.Message;
 import servermodels.chatroom.MessageType;
 import servermodels.cw.HomeWork;
+import servermodels.cw.Solution;
 import servermodels.department.Course;
 import servermodels.department.Department;
 import servermodels.department.PassedCourse;
@@ -183,8 +184,37 @@ public class Server {
             case GET_HOMEWORK -> {
                 sendHomeWorks(clientId, request);
             }
+            case GET_SOLUTIONS -> {
+                sendSolutions(clientId, request);
+            }
+            case REGISTER_MARK -> {
+                registerMark(clientId, request);
+            }
 
         }
+    }
+
+    private void registerMark(int clientId, Request request) {
+        int solutionId = (int) request.getData("solutionId");
+        Solution solution = Load.fetch(Solution.class, solutionId);
+        double mark = (double) request.getData("mark");
+        solution.setMark(mark);
+        Update.update(solution);
+    }
+
+    private void sendSolutions(int clientId, Request request) {
+        Response response = new Response();
+        int homeworkId = (int) request.getData("homeworkId");
+        List<Solution> solutions = Load.fetchAll(Solution.class);
+        ArrayList<sharedmodels.cw.Solution> solutionsToThis = new ArrayList<>();
+        for (Solution solution : solutions) {
+            if (solution.getHomeWork().getId() == homeworkId){
+                solutionsToThis.add(solution.toShared());
+            }
+        }
+        response.addData("solutions", solutionsToThis);
+
+        findClientAndSendResponse(clientId, response);
     }
 
     private void sendHomeWorks(int clientId, Request request) {
