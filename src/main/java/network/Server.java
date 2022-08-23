@@ -212,7 +212,49 @@ public class Server {
             case DELETE_EDUCATIONAL -> {
                 deleteEducational(clientId, request);
             }
+            case ADD_HOMEWORK -> {
+                addHomework(clientId, request);
+            }
+            case ADD_EDUCATIONAL -> {
+                addEducational(clientId, request);
+            }
         }
+    }
+
+    private void addEducational(int clientId, Request request) {
+        EducationalThing newEducationalThing = new EducationalThing();
+        sharedmodels.cw.EducationalThing educationalThing = (sharedmodels.cw.EducationalThing) request.getData("educational");
+        newEducationalThing.setName(educationalThing.getName());
+        newEducationalThing.setFileType(educationalThing.getFileType());
+        newEducationalThing.setFileString(educationalThing.getFileString());
+        String courseId = (String) request.getData("courseId");
+        Course course = Load.fetch(Course.class, courseId);
+        newEducationalThing.setCourse(course);
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(educationalThing);
+        session.update(course);
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    private void addHomework(int clientId, Request request) {
+        sharedmodels.cw.HomeWork homeWork = (sharedmodels.cw.HomeWork) request.getData("homework");
+        HomeWork newHomework = new HomeWork();
+        String courseId = homeWork.getCourseId();
+        Course course = Load.fetch(Course.class, courseId);
+        newHomework.setHomeWorkFileType(homeWork.getHomeWorkFileType());
+        newHomework.setCourse(course);
+        newHomework.setEndTime(homeWork.getEndTime());
+        newHomework.setStartTime(homeWork.getStartTime());
+        newHomework.setHomeWorkName(homeWork.getHomeWorkName());
+        newHomework.setHomeworkFileString(homeWork.getHomeworkFileString());
+//        Session session = sessionFactory.openSession();
+//        session.beginTransaction();
+        Save.save(homeWork);
+        Update.update(course);
+//        session.getTransaction().commit();
+//        session.close();
     }
 
     private void deleteEducational(int clientId, Request request) {
@@ -314,6 +356,7 @@ public class Server {
         int id = (int) request.getData("id");
         HomeWork homeWork = Load.fetch(HomeWork.class, id);
         response.addData("homework", homeWork.toShared());
+        System.out.println(homeWork.getHomeWorkName());
         findClientAndSendResponse(clientId, response);
     }
 
@@ -825,8 +868,6 @@ public class Server {
             starredCourses.add(course.toShared());
         }
         response.addData("starredCourses", starredCourses);
-
-        //TODO
         response.addData("suggestedCourses", starredCourses);
         //send suggested courses for student
 
