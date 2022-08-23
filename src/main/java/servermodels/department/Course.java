@@ -38,8 +38,8 @@ public class Course {
     private String examTime;
     @Column
     private String prerequisiteId;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    @JoinTable(name = "haveCourse_Student")
+    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "courses", cascade = {CascadeType.ALL})
+
     private List<Student> studentsHaveCourse = new ArrayList<>();
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "course_TA_Course")

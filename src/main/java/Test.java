@@ -59,8 +59,11 @@ public class Test {
 //        System.out.println(course.getStudentsHaveCourse().size());
 
 
-        Course course = Load.fetch(Course.class, "11111");
-        course.setHaveCwPage(true);
-        Update.update(course);
+//        Course course = Load.fetch(Course.class, "11111");
+//        course.setHaveCwPage(true);
+//        Update.update(course);
+
+        Master master = Load.fetch(Master.class, "890123");
+        System.out.println(master.getCourses().size());
     }
 }

@@ -1,5 +1,6 @@
 package network;
 
+import config.Config;
 import load.Load;
 import login.CheckDateTime;
 import org.hibernate.Session;
@@ -39,6 +40,7 @@ public class Server {
     private static int clientCount = 0;
     private static final SessionFactory sessionFactory = Save.sessionFactory;
 
+    private static final Config config = Config.getConfig();
     private ServerSocket serverSocket;
     //    private Edu edu;
     private final int port;
@@ -218,7 +220,24 @@ public class Server {
             case ADD_EDUCATIONAL -> {
                 addEducational(clientId, request);
             }
+            case ALL_HOMEWORKS -> {
+                sendAllHomeworks(clientId, request);
+            }
         }
+    }
+
+    private void sendAllHomeworks(int clientId, Request request) {
+        String courseId = (String) request.getData("courseId");
+        List<HomeWork> homeWorks = Load.fetchAll(HomeWork.class);
+        ArrayList<sharedmodels.cw.HomeWork> homeWorkArrayList = new ArrayList<>();
+        for (HomeWork homeWork : homeWorks) {
+            if (homeWork.getCourse().getId().equals(courseId)){
+                homeWorkArrayList.add(homeWork.toShared());
+            }
+        }
+        Response response = new Response();
+        response.addData("homeworks", homeWorkArrayList);
+        findClientAndSendResponse(clientId, response);
     }
 
     private void addEducational(int clientId, Request request) {
@@ -356,7 +375,6 @@ public class Server {
         int id = (int) request.getData("id");
         HomeWork homeWork = Load.fetch(HomeWork.class, id);
         response.addData("homework", homeWork.toShared());
-        System.out.println(homeWork.getHomeWorkName());
         findClientAndSendResponse(clientId, response);
     }
 
