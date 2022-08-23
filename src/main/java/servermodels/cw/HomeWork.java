@@ -16,6 +16,8 @@ public class HomeWork {
     private String homeWorkName;
     @Column
     private String homeworkFileString;
+    @Column
+    private String homeWorkFileType;
     @Column(name = "homework_start")
     private String startTime;
     @Column(name = "homework_end")
@@ -27,7 +29,6 @@ public class HomeWork {
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "course_homework")
     private Course course;
-
     public HomeWork() {
     }
 
@@ -91,6 +92,14 @@ public class HomeWork {
         this.endTime = endTime;
     }
 
+    public String getHomeWorkFileType() {
+        return homeWorkFileType;
+    }
+
+    public void setHomeWorkFileType(String homeWorkFileType) {
+        this.homeWorkFileType = homeWorkFileType;
+    }
+
     public sharedmodels.cw.HomeWork toShared(){
         sharedmodels.cw.HomeWork homeWork = new sharedmodels.cw.HomeWork();
         homeWork.setHomeworkFileString(homeworkFileString);
@@ -104,6 +113,7 @@ public class HomeWork {
         homeWork.setStartTime(startTime);
         homeWork.setEndTime(endTime);
         homeWork.setCourseId(course.getId());
+        homeWork.setHomeWorkFileType(homeWorkFileType);
         return homeWork;
     }
 

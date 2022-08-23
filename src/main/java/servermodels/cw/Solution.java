@@ -14,13 +14,13 @@ public class Solution {
     private double mark;
     @Column
     private String time;
+    @Column
+    private String answerFileType;
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "solution_student")
     private Student responsive;
     @Column
     private String answerFileString;
-    @Column
-    private String answerFileType;
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "sol_homework")
     private HomeWork homeWork;

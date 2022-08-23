@@ -2,6 +2,7 @@ package network;
 
 import load.Load;
 import login.CheckDateTime;
+import org.hibernate.SessionFactory;
 import request.Request;
 import request.RequestType;
 import response.Response;
@@ -190,8 +191,59 @@ public class Server {
             case REGISTER_MARK -> {
                 registerMark(clientId, request);
             }
-
+            case HAVE_SOLUTION -> {
+                checkHaveSolution(clientId, request);
+            }
+            case GET_SOLUTION -> {
+                sendSolution(clientId, request);
+            }
+            case NEW_SOLUTION -> {
+                newSolution(clientId, request);
+            }
         }
+    }
+
+    private void newSolution(int clientId, Request request) {
+        sharedmodels.cw.Solution registeredSol = (sharedmodels.cw.Solution) request.getData("solution");
+        sharedmodels.cw.HomeWork solutionHomework = (sharedmodels.cw.HomeWork) request.getData("homework");
+        Solution solution = new Solution();
+        HomeWork homeWork = Load.fetch(HomeWork.class, solutionHomework.getId());
+        solution.setAnswerFileString(registeredSol.getAnswerFileString());
+        solution.setAnswerFileType(registeredSol.getAnswerFileType());
+        String responsiveId = registeredSol.getResponsiveId();
+        Student student = Load.fetch(Student.class, responsiveId);
+        solution.setResponsive(student);
+        solution.setTime(registeredSol.getTime());
+        solution.setHomeWork(homeWork);
+        homeWork.getSolutions().add(solution);
+        Save.save(solution);
+        Update.update(homeWork);
+    }
+
+    private void sendSolution(int clientId, Request request) {
+        Response response = new Response();
+        int homeworkId = (int) request.getData("homeworkId");
+        String username = (String) request.getData("username");
+        HomeWork homeWork = Load.fetch(HomeWork.class, homeworkId);
+        for (Solution solution : homeWork.getSolutions()) {
+            if (solution.getResponsive().getUsername().equals(username)){
+                response.addData("solution", solution);
+            }
+        }
+        findClientAndSendResponse(clientId, response);
+    }
+
+    private void checkHaveSolution(int clientId, Request request) {
+        int homeworkId = (int) request.getData("homeworkId");
+        String username = (String) request.getData("username");
+        Response response = new Response();
+        HomeWork homeWork = Load.fetch(HomeWork.class, homeworkId);
+        boolean haveSolution = false;
+        for (Solution solution : homeWork.getSolutions()) {
+            if (solution.getResponsive().getUsername().equals(username))haveSolution = true;
+        }
+        response.addData("result", haveSolution);
+        findClientAndSendResponse(clientId, response);
     }
 
     private void registerMark(int clientId, Request request) {
@@ -238,7 +290,10 @@ public class Server {
         }
         if (isStarred){
             for (Course course1 : starred) {
-                if (course1.getId().equals(courseId))student.getStarredCourses().remove(course1);
+                if (course1.getId().equals(courseId)){
+                    student.getStarredCourses().remove(course1);
+                    break;
+                }
                 response.setErrorMessage("your course successfully unstarred!");
             }
         }else {
@@ -292,13 +347,19 @@ public class Server {
         Student student = Load.fetch(Student.class, userId);
         List<Course> courses = student.getCourses();
         for (Course course : courses) {
-            if (course.getId().equals(courseId))student.getCourses().remove(course);
+            if (course.getId().equals(courseId)){
+                student.getCourses().remove(course);
+                break;
+            }
         }
         Course course = Load.fetch(Course.class, courseId);
-        course.setCapacity(course.getCapacity() - 1);
         for (Student student1 : course.getStudentsHaveCourse()) {
-            if (student1.getUsername().equals(userId))course.getStudentsHaveCourse().remove(student1);
+            if (student1.getUsername().equals(userId)){
+                course.getStudentsHaveCourse().remove(student1);
+                break;
+            }
         }
+        course.setCapacity(course.getCapacity() + 1);
         Update.update(course);
         Update.update(student);
         response.setErrorMessage("your course successfully deleted!");
@@ -712,9 +773,9 @@ public class Server {
             passedCourses1.add(passedCourse.toShared());
         }
         response.addData("passedCourses", passedCourses1);
-        List<Course> courseList = student.getCourses();
+        List<Course> coursesHave = student.getCourses();
         ArrayList<sharedmodels.department.Course> courses2 = new ArrayList<>();
-        for (Course course : courseList) {
+        for (Course course : coursesHave) {
             courses2.add(course.toShared());
         }
         response.addData("coursesHave", courses2);
@@ -726,6 +787,7 @@ public class Server {
         response.addData("starredCourses", starredCourses);
 
         //TODO
+        response.addData("suggestedCourses", starredCourses);
         //send suggested courses for student
 
         findClientAndSendResponse(clientId, response);

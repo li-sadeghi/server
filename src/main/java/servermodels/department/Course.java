@@ -38,16 +38,16 @@ public class Course {
     private String examTime;
     @Column
     private String prerequisiteId;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "course_student_have_course")
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @JoinTable(name = "haveCourse_Student")
     private List<Student> studentsHaveCourse = new ArrayList<>();
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "course_TA_Course")
     private List<Student> teacherAssistants  = new ArrayList<>();
-    @OneToMany( fetch = FetchType.EAGER, mappedBy = "course",cascade = { CascadeType.ALL})
+    @OneToMany( fetch = FetchType.LAZY, mappedBy = "course",cascade = { CascadeType.ALL})
 
     private Set<EducationalThing> educationalThings  = new HashSet<>();
-    @OneToMany( fetch = FetchType.EAGER, mappedBy = "course",cascade = {CascadeType.ALL})
+    @OneToMany( fetch = FetchType.LAZY, mappedBy = "course",cascade = {CascadeType.ALL})
 
     private Set<HomeWork> homeWorks  = new HashSet<>();
 
@@ -192,21 +192,40 @@ public class Course {
         }
         course.setStudentsHaveCourseId(students2);
         course.setPrerequisiteId(prerequisiteId);
-        ArrayList<Integer> homeWorksId = new ArrayList<>();
-        for (HomeWork homeWork : homeWorks) {
-            homeWorksId.add(homeWork.getId());
-        }
+        ArrayList<Integer> homeWorksId = getHwIds();
+//        for (HomeWork homeWork : homeWorks) {
+//            homeWorksId.add(homeWork.getId());
+//        }
         course.setHomeWorksId(homeWorksId);
-        ArrayList<Integer> educationalThingsId = new ArrayList<>();
-        for (EducationalThing educationalThing : educationalThings) {
-            educationalThingsId.add(educationalThing.getId());
-        }
+        ArrayList<Integer> educationalThingsId = getEducationalIds();
+//        for (EducationalThing educationalThing : educationalThings) {
+//            educationalThingsId.add(educationalThing.getId());
+//        }
         course.setEducationalThingsId(educationalThingsId);
         course.setDepartmentName(department.getName());
         course.setExamTime(examTime);
         course.setHaveCwPage(haveCwPage);
         return course;
     }
+    private ArrayList<Integer> getHwIds(){
+        ArrayList<Integer> hwIds = new ArrayList<>();
+        List<HomeWork> homeWorks = Load.fetchAll(HomeWork.class);
+        for (HomeWork homeWork : homeWorks) {
+            if (homeWork.getCourse().getId().equals(id))hwIds.add(homeWork.getId());
+        }
+        return hwIds;
+    }
+    private ArrayList<Integer> getEducationalIds(){
+        ArrayList<Integer> eduIds = new ArrayList<>();
+        List<EducationalThing> allEdus = Load.fetchAll(EducationalThing.class);
+        for (EducationalThing educationalThing : allEdus) {
+            if (educationalThing.getCourse().getId().equals(id)){
+                eduIds.add(educationalThing.getId());
+            }
+        }
+        return eduIds;
+    }
+
 
 
 }

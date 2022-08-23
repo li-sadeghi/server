@@ -39,8 +39,8 @@ public class Student extends User{
     private String registrationTimeStart;
     @Column
     private String registrationTimeEnd;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "Student_Course")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "studentsHaveCourse",cascade = {CascadeType.ALL})
+
     private List<Course> courses = new ArrayList<>() ;
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "student_starredCourse")

@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 @Entity
 public class EducationalThing {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -15,6 +16,8 @@ public class EducationalThing {
     private String name;
     @Column
     private String fileString;
+    @Column
+    private String fileType;
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "course_educational")
     private Course course;
@@ -58,11 +61,20 @@ public class EducationalThing {
         this.course = course;
     }
 
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
     public sharedmodels.cw.EducationalThing toShared(){
         sharedmodels.cw.EducationalThing educationalThing = new sharedmodels.cw.EducationalThing();
         educationalThing.setId(id);
         educationalThing.setFileString(fileString);
         educationalThing.setName(name);
+        educationalThing.setFileType(fileType);
         return educationalThing;
     }
 }

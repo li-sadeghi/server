@@ -1,6 +1,7 @@
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.Transaction;
 import save.Save;
 import servermodels.chatroom.Message;
 import servermodels.chatroom.MessageType;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreateDataBase {
+    private static final SessionFactory sessionFactory = Save.sessionFactory;
+
     public static void main(String[] args) {
         //mohseni
         User mrMohseni = new User("2", "123");
@@ -532,6 +535,14 @@ public class CreateDataBase {
         homeWork5.setCourse(course7);
 
 
+
+        homeWork1.setHomeWorkFileType("jpg");
+        homeWork2.setHomeWorkFileType("jpg");
+        homeWork3.setHomeWorkFileType("jpg");
+        homeWork4.setHomeWorkFileType("jpg");
+        homeWork5.setHomeWorkFileType("jpg");
+
+
         EducationalThing educationalThing3 = new EducationalThing();
         educationalThing3.setName("a video to education");
         educationalThing3.setFileString(EncodeDecodeFile.encode("C:\\Users\\Li\\Desktop\\Masters\\6.jpg"));
@@ -549,8 +560,21 @@ public class CreateDataBase {
         course1.getStudentsHaveCourse().add(student1);
         course7.getStudentsHaveCourse().add(student2);
 
+
+        educationalThing1.setFileType("jpg");
+        educationalThing2.setFileType("jpg");
+        educationalThing3.setFileType("jpg");
+        educationalThing4.setFileType("jpg");
+
+
+        System.out.println(student2.getCourses().size());
+
+
         student1.getCourses().add(course1);
         student2.getCourses().add(course7);
+
+        System.out.println(student2.getCourses().size());
+
 
         PassedCourse passedCourse = new PassedCourse();
         passedCourse.setCourseId("4561");
@@ -584,6 +608,8 @@ public class CreateDataBase {
         message1.setTime(DateAndTime.getDateAndTime());
         message1.setFileType("");
 
+
+
 //        Message message = new Message();
 //        message.setMessageText("hi");
 //        message.setMessageType(MessageType.TEXT);
@@ -594,70 +620,81 @@ public class CreateDataBase {
 
 
 
+//        Session session = Save.sessionFactory.openSession();
+//        session.beginTransaction();
         Session session = Save.sessionFactory.openSession();
-        session.beginTransaction();
-        session.save(mrMohseni);
-        session.save(admin);
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            session.persist(mrMohseni);
+            session.persist(admin);
 
 
-        session.save(student1);
-        session.save(student2);
-        session.save(student3);
-        session.save(student4);
-        session.save(student5);
-        session.save(student6);
-        session.save(student7);
-        session.save(student8);
-        session.save(student9);
-
-        session.save(master1);
-        session.save(master2);
-        session.save(master3);
-        session.save(master4);
-        session.save(master5);
-        session.save(master6);
-        session.save(master7);
-        session.save(master8);
-        session.save(master9);
-
-        session.save(course1);
-        session.save(course2);
-        session.save(course3);
-        session.save(course4);
-        session.save(course5);
-        session.save(course6);
-        session.save(course7);
-        session.save(course8);
-
-        session.save(mrMohseni);
-        session.save(admin);
+            session.persist(homeWork1);
+            session.persist(homeWork2);
+            session.persist(homeWork3);
+            session.persist(homeWork4);
+            session.persist(homeWork5);
 
 
-        session.save(homeWork1);
-        session.save(homeWork2);
-        session.save(homeWork3);
-        session.save(homeWork4);
-        session.save(homeWork5);
+            session.persist(educationalThing1);
+            session.persist(educationalThing2);
+            session.persist(educationalThing3);
+            session.persist(educationalThing4);
+
+            session.persist(student1);
+            session.persist(student2);
+            session.persist(student3);
+            session.persist(student4);
+            session.persist(student5);
+            session.persist(student6);
+            session.persist(student7);
+            session.persist(student8);
+            session.persist(student9);
+
+            session.persist(master1);
+            session.persist(master2);
+            session.persist(master3);
+            session.persist(master4);
+            session.persist(master5);
+            session.persist(master6);
+            session.persist(master7);
+            session.persist(master8);
+            session.persist(master9);
+
+            session.persist(course1);
+            session.persist(course2);
+            session.persist(course3);
+            session.persist(course4);
+            session.persist(course5);
+            session.persist(course6);
+            session.persist(course7);
+            session.persist(course8);
+
+            session.persist(mrMohseni);
+            session.persist(admin);
 
 
-        session.save(educationalThing1);
-        session.save(educationalThing2);
-        session.save(educationalThing3);
-        session.save(educationalThing4);
 
 
-        session.save(passedCourse);
-        session.save(temporaryCourse);
+
+            session.persist(passedCourse);
+            session.persist(temporaryCourse);
 
 
-        session.save(department1);
-        session.save(department2);
-        session.save(department3);
+            session.persist(department1);
+            session.persist(department2);
+            session.persist(department3);
 
-        session.save(message1);
+            session.persist(message1);
+            tx.commit();
+        }catch ( HibernateException e) {
+            if(tx != null)  tx.rollback();
+        } finally {
+            session.close();}
 
-        session.getTransaction().commit();
-        session.close();
+//        session.getTransaction().commit();
+//        session.close();
 
 
 
@@ -705,4 +742,5 @@ public class CreateDataBase {
 //        Save.save(message);
 
     }
+
 }
