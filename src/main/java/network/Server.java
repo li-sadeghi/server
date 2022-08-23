@@ -2,6 +2,7 @@ package network;
 
 import load.Load;
 import login.CheckDateTime;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import request.Request;
 import request.RequestType;
@@ -11,6 +12,7 @@ import save.Save;
 import save.Update;
 import servermodels.chatroom.Message;
 import servermodels.chatroom.MessageType;
+import servermodels.cw.EducationalThing;
 import servermodels.cw.HomeWork;
 import servermodels.cw.Solution;
 import servermodels.department.Course;
@@ -35,6 +37,7 @@ import java.util.List;
 public class Server {
     private final ArrayList<ClientHandler> clients;
     private static int clientCount = 0;
+    private static final SessionFactory sessionFactory = Save.sessionFactory;
 
     private ServerSocket serverSocket;
     //    private Edu edu;
@@ -200,7 +203,44 @@ public class Server {
             case NEW_SOLUTION -> {
                 newSolution(clientId, request);
             }
+            case ADD_USER_TO_COURSE -> {
+                addUserToCourse(clientId, request);
+            }
+            case GET_EDUCATIONAL -> {
+                sendEducational(clientId, request);
+            }
+            case DELETE_EDUCATIONAL -> {
+                deleteEducational(clientId, request);
+            }
         }
+    }
+
+    private void deleteEducational(int clientId, Request request) {
+        int id = (int) request.getData("id");
+        Load.delete(EducationalThing.class, id);
+    }
+
+    private void sendEducational(int clientId, Request request) {
+        int eduId = (int) request.getData("id");
+        EducationalThing educationalThing = Load.fetch(EducationalThing.class, eduId);
+        Response response = new Response();
+        response.addData("educational", educationalThing.toShared());
+        findClientAndSendResponse(clientId, response);
+    }
+
+    private void addUserToCourse(int clientId, Request request) {
+        String studentId = (String) request.getData("studentId");
+        String courseId = (String) request.getData("courseId");
+        Student student = Load.fetch(Student.class, studentId);
+        Course course = Load.fetch(Course.class, courseId);
+        course.getStudentsHaveCourse().add(student);
+        student.getCourses().add(course);
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.update(course);
+        session.update(student);
+        session.getTransaction().commit();
+        session.close();
     }
 
     private void newSolution(int clientId, Request request) {

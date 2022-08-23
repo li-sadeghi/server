@@ -52,11 +52,15 @@ public class Test {
 //        Student student = Load.fetch(Student.class, "99205365");
 //        System.out.println(student.getCourses().size());
 
-        Master master = Load.fetch(Master.class, "678901");
-        System.out.println(master.getCourses().size());
+//        Master master = Load.fetch(Master.class, "678901");
+//        System.out.println(master.getCourses().size());
 
 //        Course course = Load.fetch(Course.class, "77777");
 //        System.out.println(course.getStudentsHaveCourse().size());
 
+
+        Course course = Load.fetch(Course.class, "11111");
+        course.setHaveCwPage(true);
+        Update.update(course);
     }
 }
