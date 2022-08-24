@@ -49,7 +49,7 @@ public class Test {
 //        HomeWork homeWork = Load.fetch(HomeWork.class , 1);
 //        System.out.println(homeWork.getEndTime());
 
-//        Student student = Load.fetch(Student.class, "99205365");
+//        Student student = Load.fetch(Student.class, "9810147");
 //        System.out.println(student.getCourses().size());
 
 //        Master master = Load.fetch(Master.class, "678901");
@@ -63,7 +63,10 @@ public class Test {
 //        course.setHaveCwPage(true);
 //        Update.update(course);
 
-        Master master = Load.fetch(Master.class, "890123");
+        Master master = Load.fetch(Master.class, "678901");
         System.out.println(master.getCourses().size());
+
+//        Department department = Load.fetch(Department.class, "1");
+//        System.out.println(department.getCourses().size());
     }
 }

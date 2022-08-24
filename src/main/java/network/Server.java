@@ -395,11 +395,13 @@ public class Server {
                     student.getStarredCourses().remove(course1);
                     break;
                 }
-                response.setErrorMessage("your course successfully unstarred!");
+                String unstarCourseNotice = config.getProperty(String.class, "unstarCourseNotice");
+                response.setErrorMessage(unstarCourseNotice);
             }
         }else {
             student.getStarredCourses().add(course);
-            response.setErrorMessage("your course successfully starred!");
+            String starCourseNotice = config.getProperty(String.class, "starCourseNotice");
+            response.setErrorMessage(starCourseNotice);
         }
         Update.update(student);
         findClientAndSendResponse(clientId, response);
@@ -412,20 +414,26 @@ public class Server {
         Course course = Load.fetch(Course.class, courseId);
         Student student = Load.fetch(Student.class, userId);
         if (student.getUnits() + course.getUnit() > 10){
-            response.setErrorMessage("your units is full");
+            String unitLimitError = config.getProperty(String.class, "unitLimitError");
+            response.setErrorMessage(unitLimitError);
         } else if (course.getCapacity() == 0) {
-            response.setErrorMessage("capacity full!!");
+            String capacityError = config.getProperty(String.class, "capacityError");
+            response.setErrorMessage(capacityError);
         }else {
             if (course.isMaaref() && student.haveMaaref()){
-                response.setErrorMessage("only one maaref course!");
+                String maarefCourseError = config.getProperty(String.class, "maarefCourseError");
+                response.setErrorMessage(maarefCourseError);
             }else {
                 String pre = course.getPrerequisiteId();
                 if (pre != null && !student.isPassedCourse(pre)){
-                    response.setErrorMessage("Prerequisite not met!");
+                    String prerequisiteError = config.getProperty(String.class, "prerequisiteError");
+                    response.setErrorMessage(prerequisiteError);
                 }else if (student.interferenceWeeklyTime(course.getWeeklyTime())){
-                    response.setErrorMessage("interference weekly time!");
+                    String interferenceWeeklyTimeError = config.getProperty(String.class, "interferenceWeeklyTimeError");
+                    response.setErrorMessage(interferenceWeeklyTimeError);
                 }else if (student.interferenceExamTime(course.getExamTime())){
-                    response.setErrorMessage("interference exam time!");
+                    String interferenceExamTimeError = config.getProperty(String.class, "interferenceExamTimeError");
+                    response.setErrorMessage(interferenceExamTimeError);
                 }else {
                     student.getCourses().add(course);
                     course.getStudentsHaveCourse().add(student);
@@ -433,7 +441,8 @@ public class Server {
                     student.setUnits(student.getUnits() + course.getUnit());
                     Update.update(course);
                     Update.update(student);
-                    response.setErrorMessage("course successfully catched!");
+                    String catchCourseNotice  = config.getProperty(String.class, "catchCourseNotice");
+                    response.setErrorMessage(catchCourseNotice);
                 }
             }
 
@@ -463,7 +472,8 @@ public class Server {
         course.setCapacity(course.getCapacity() + 1);
         Update.update(course);
         Update.update(student);
-        response.setErrorMessage("your course successfully deleted!");
+        String deleteCourseNotice = config.getProperty(String.class, "deleteCourseNotice");
+        response.setErrorMessage(deleteCourseNotice);
         findClientAndSendResponse(clientId, response);
     }
 
@@ -501,7 +511,8 @@ public class Server {
         TemporaryCourse temporaryCourse = Load.fetch(TemporaryCourse.class, temporaryCourseId);
         temporaryCourse.setProtestText(protestTex);
         Update.update(temporaryCourse);
-        response.setErrorMessage("your protest successfully sent!");
+        String registerProtestNotice = config.getProperty(String.class, "registerProtestNotice");
+        response.setErrorMessage(registerProtestNotice);
         findClientAndSendResponse(clientId, response);
     }
 
@@ -543,7 +554,8 @@ public class Server {
         for (Course course : courses) {
             Update.update(course);
         }
-        response.setErrorMessage("master edited successfully!");
+        String editMasterNotice = config.getProperty(String.class, "editMasterNotice");
+        response.setErrorMessage(editMasterNotice);
         findClientAndSendResponse(clientId, response);
     }
 
@@ -578,7 +590,8 @@ public class Server {
         student.setTemporaryCourses(new ArrayList<>());
         Save.save(student);
         Update.update(editor.getDepartment());
-        response.setErrorMessage("student added successfully");
+        String addStudentNotice = config.getProperty(String.class, "addStudentNotice");
+        response.setErrorMessage(addStudentNotice);
         findClientAndSendResponse(clientId, response);
     }
 
@@ -627,7 +640,8 @@ public class Server {
         for (Course course : courses) {
             Update.update(course);
         }
-        response.setErrorMessage("master added successfully!");
+        String addMasterNotice = config.getProperty(String.class, "addMasterNotice");
+        response.setErrorMessage(addMasterNotice);
         findClientAndSendResponse(clientId, response);
     }
 
@@ -675,7 +689,8 @@ public class Server {
         for (Student ta : TAs) {
             Update.update(ta);
         }
-        response.setErrorMessage("your course successfully edited!");
+        String editCourseNotice = config.getProperty(String.class, "editCourseNotice");
+        response.setErrorMessage(editCourseNotice);
         findClientAndSendResponse(clientId, response);
     }
 
@@ -688,6 +703,7 @@ public class Server {
         ArrayList<String> studentIDs = (ArrayList<String>) request.getData("studentIDs");
         ArrayList<String> tAsIds = (ArrayList<String>) request.getData("tAsIds");
         Course course = new Course();
+        course.setName(editedCourse.getName());
         course.setId(editedCourse.getId());
         course.setUnit(editedCourse.getUnit());
         course.setWeeklyTime(editedCourse.getWeeklyTime());
@@ -716,21 +732,23 @@ public class Server {
         course.setTeacherAssistants(TAs);
         course.setStudentsHaveCourse(studentsHaveCourse);
         Save.save(course);
-        Update.update(department);
-        Update.update(prerequisiteCourse);
-        for (Student student : studentsHaveCourse) {
-            Update.update(student);
-        }
-        for (Student ta : TAs) {
-            Update.update(ta);
-        }
-        response.setErrorMessage("your course successfully added!");
+//        Update.update(department);
+//        Update.update(prerequisiteCourse);
+//        for (Student student : studentsHaveCourse) {
+//            Update.update(student);
+//        }
+//        for (Student ta : TAs) {
+//            Update.update(ta);
+//        }
+        String addCourseNotice = config.getProperty(String.class, "addCourseNotice");
+        response.setErrorMessage(addCourseNotice);
         findClientAndSendResponse(clientId, response);
     }
 
     private void deleteMAster(int clientId, Request request) {
         Response response = new Response();
-        response.setErrorMessage("Master was deleted successfully");
+        String deleteMasterNotice = config.getProperty(String.class, "deleteMasterNotice");
+        response.setErrorMessage(deleteMasterNotice);
         String masterIdSelected = (String) request.getData("usernameSelected");
         Load.delete(Master.class, masterIdSelected);
         findClientAndSendResponse(clientId, response);
@@ -738,15 +756,23 @@ public class Server {
 
     private void deleteCourse(int clientId, Request request) {
         Response response = new Response();
-        response.setErrorMessage("Course was deleted successfully");
+        String deleteCourseNotice = config.getProperty(String.class, "deleteCourseNotice");
+        response.setErrorMessage(deleteCourseNotice);
         String courseId = (String) request.getData("courseId");
-        Load.delete(Course.class, courseId);
+//        Load.delete(Course.class, courseId);
+        Course course = Load.fetch(Course.class, courseId);
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.remove(course);
+        session.getTransaction().commit();
+        session.close();
         findClientAndSendResponse(clientId, response);
     }
 
     private void changePhoneNumber(int clientId, Request request) {
         Response response = new Response();
-        response.setErrorMessage("your phone number changed successfully!");
+        String changePhoneNotice = config.getProperty(String.class, "changePhoneNotice");
+        response.setErrorMessage(changePhoneNotice);
         String username = (String) request.getData("username");
         User user = Load.fetch(User.class, username);
         String newPhone = (String) request.getData("newPhone");
@@ -757,7 +783,8 @@ public class Server {
 
     private void changeEmail(int clientId, Request request) {
         Response response = new Response();
-        response.setErrorMessage("your email changed successfully!");
+        String emailChangeNotice = config.getProperty(String.class, "emailChangeNotice");
+        response.setErrorMessage(emailChangeNotice);
         String username = (String) request.getData("username");
         User user = Load.fetch(User.class, username);
         String newEmail = (String) request.getData("newEmail");
@@ -1008,9 +1035,11 @@ public class Server {
             String timeNow = DateAndTime.getDateAndTime();
             user.setLastLogin(timeNow);
             response.setStatus(ResponseStatus.OK);
-            response.setErrorMessage("your password changed successfully!");
+            String changePassNotice = config.getProperty(String.class, "changePassNotice");
+            response.setErrorMessage(changePassNotice);
         }else {
-            response.setErrorMessage("your previous password is wrong!");
+            String changePassError = config.getProperty(String.class, "changePassError");
+            response.setErrorMessage(changePassError);
         }
         Update.update(user);
         findClientAndSendResponse(clientId, response);
@@ -1033,10 +1062,12 @@ public class Server {
         Response response = new Response();
         response.setHashMap();
         if (!Load.isExistUser(username)){
-            response.setErrorMessage("user is not exists");
+            String existanceUserError = config.getProperty(String.class, "existanceUserError");
+            response.setErrorMessage(existanceUserError);
             response.setStatus(ResponseStatus.ERROR);
         }else if (!Load.isCorrectPass(username, password)){
-            response.setErrorMessage("password is incorrect");
+            String passIncorrectError = config.getProperty(String.class, "passIncorrectError");
+            response.setErrorMessage(passIncorrectError);
             response.setStatus(ResponseStatus.ERROR);
         }else {
             User user = Load.fetch(User.class, username);
