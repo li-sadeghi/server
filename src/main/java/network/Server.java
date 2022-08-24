@@ -223,7 +223,19 @@ public class Server {
             case ALL_HOMEWORKS -> {
                 sendAllHomeworks(clientId, request);
             }
+            case ADD_TA -> {
+                addTAtoCourse(clientId, request);
+            }
         }
+    }
+
+    private void addTAtoCourse(int clientId, Request request) {
+        String taId = (String) request.getData("taId");
+        String courseId = (String) request.getData("courseId");
+        Course course = Load.fetch(Course.class, courseId);
+        Student ta = Load.fetch(Student.class, taId);
+        course.getTeacherAssistants().add(ta);
+        Update.update(course);
     }
 
     private void sendAllHomeworks(int clientId, Request request) {
@@ -927,11 +939,11 @@ public class Server {
             String sender = message.getSender().getUsername();
             String receiver = message.getReceiver().getUsername();
             if (sender.equals(username)){
-                if (isOk(chatWith, receiver)&& !receiver.equals("1") && !receiver.equals("2")){
+                if (isOk(chatWith, receiver)){
                     chatWith.add(receiver);
                 }
             }else if (receiver.equals(username)){
-                if (isOk(chatWith, sender)&& !sender.equals("1") && !sender.equals("2"))chatWith.add(sender);
+                if (isOk(chatWith, sender))chatWith.add(sender);
             }
         }
         for (String id : chatWith) {
